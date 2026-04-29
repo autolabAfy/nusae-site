@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>NUSAÉ — Effortless modest pieces, made simple</title>
+<meta name="description" content="NUSAÉ — comfortable, modest, timeless pieces for everyday wear. Handpicked. Breathable. Worldwide shipping." />
+<meta property="og:title" content="NUSAÉ — Effortless modest pieces" />
+<meta property="og:description" content="Comfortable, modest, timeless. Worldwide shipping. Order in 2 minutes via WhatsApp." />
+<meta property="og:image" content="assets/ophelia-meet.jpg" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='75' font-size='80' font-family='serif'>N</text></svg>" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css" />
+<script>
+  // -------- ONE-LINE CONFIG --------
+  // Replace WA_NUMBER with your WhatsApp number in international format (no +, no spaces).
+  // Example: Singapore +65 9123 4567 -> "6591234567"
+  const WA_NUMBER = "6597229061";
+  const WA_BASE = (msg) => `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`;
+  // ----------------------------------
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll("[data-wa]").forEach(a => {
+      a.href = WA_BASE(a.dataset.wa);
+      a.target = "_blank";
+      a.rel = "noopener";
+    });
+  });
+</script>
+</head>
+<body>
+
+<!-- ANNOUNCEMENT BAR -->
+<div class="announce">🌍 Worldwide shipping · 💌 Order in under 2 minutes via WhatsApp</div>
+
+<!-- NAV -->
+<header class="nav">
+  <a href="#top" class="brand">NUSAÉ</a>
+  <nav>
+    <a href="#shop">Shop</a>
+    <a href="#how">How to order</a>
+    <a href="#sizing">Sizing</a>
+    <a href="#faq">FAQ</a>
+  </nav>
+  <a class="btn btn-ghost" data-wa="Hi NUSAÉ, I'd like to know what's available 🤍">Order Here</a>
+</header>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <div class="hero-text">
+    <p class="eyebrow">— A space for everyday modest wear —</p>
+    <h1>Effortless pieces.<br />Made simple.</h1>
+    <p class="lede">Comfortable, modest, and timeless. Handpicked styles in breathable fabrics — so getting dressed feels easy, never heavy.</p>
+    <div class="cta-row">
+      <a class="btn btn-primary" data-wa="Hi NUSAÉ, I'd like to order Ophelia 🤍">Shop on WhatsApp</a>
+      <a class="btn btn-secondary" href="#shop">View Ophelia</a>
+    </div>
+  </div>
+  <div class="hero-art">
+    <div class="hero-slides">
+      <img src="assets/ophelia-meet.jpg" alt="Ophelia in white" class="hero-slide is-active" />
+      <img src="assets/ophelia-black-closeup.jpg" alt="Ophelia in black" class="hero-slide" />
+      <img src="assets/ophelia-matcha.jpg" alt="Ophelia styled with matcha" class="hero-slide" />
+    </div>
+    <div class="hero-floral"></div>
+  </div>
+</section>
+
+<!-- FEATURED PRODUCT -->
+<section class="shop" id="shop">
+  <div class="section-head">
+    <p class="eyebrow">— The Ophelia Collection —</p>
+    <h2>Meet Ophelia</h2>
+    <p class="sub">A delicate lace outerwear that adds just the right touch to any outfit. Light, breathable, made to be worn with ease — no overthinking, just effortless styling.</p>
+  </div>
+
+  <div class="product">
+    <div class="gallery">
+      <div class="gallery-main">
+        <img src="assets/ophelia-shades.jpg" alt="Ophelia in white, black and grey" id="mainImage" />
+      </div>
+      <div class="thumbs">
+        <button onclick="document.getElementById('mainImage').src='assets/ophelia-shades.jpg'"><img src="assets/ophelia-shades.jpg" alt="" /></button>
+        <button onclick="document.getElementById('mainImage').src='assets/ophelia-meet.jpg'"><img src="assets/ophelia-meet.jpg" alt="" /></button>
+        <button onclick="document.getElementById('mainImage').src='assets/ophelia-matcha.jpg'"><img src="assets/ophelia-matcha.jpg" alt="" /></button>
+        <button onclick="document.getElementById('mainImage').src='assets/ophelia-black-closeup.jpg'"><img src="assets/ophelia-black-closeup.jpg" alt="" /></button>
+      </div>
+    </div>
+
+    <div class="product-info">
+      <h3>Ophelia Lace Outerwear</h3>
+      <p class="price">SGD $35</p>
+      <p class="product-copy">Delicate lace, effortless drape, made for quiet elegance. Your everyday layering piece — worn over a tank, a slip dress, or a quiet matcha morning.</p>
+
+      <div class="swatches">
+        <p class="swatch-label">Available in</p>
+        <div class="swatch-row">
+          <span class="swatch swatch-white" title="White"></span>
+          <span class="swatch swatch-beige" title="Beige"></span>
+          <span class="swatch swatch-grey" title="Grey"></span>
+          <span class="swatch swatch-black" title="Black"></span>
+        </div>
+      </div>
+
+      <ul class="specs">
+        <li><strong>Fabric</strong> Lace, breathable lining</li>
+        <li><strong>Sizes</strong> Free size (fits XS–L)</li>
+        <li><strong>Fit</strong> Relaxed, layering-friendly</li>
+        <li><strong>Status</strong> Pre-order · Processing 5–10 days</li>
+      </ul>
+
+      <div class="cta-row">
+        <a class="btn btn-primary" data-wa="Hi NUSAÉ 🤍 I'd like to order Ophelia. Colour: ___ (white / beige / grey / black). Could you share availability and payment options?">Order Here</a>
+        <a class="btn btn-secondary" href="#sizing">Check sizing</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW TO ORDER -->
+<section class="how" id="how">
+  <div class="section-head">
+    <p class="eyebrow">— How it works —</p>
+    <h2>Order in under 2 minutes</h2>
+    <p class="sub">Four small steps, one quiet purchase.</p>
+  </div>
+  <ol class="steps">
+    <li>
+      <span class="step-num">01</span>
+      <span class="step-flourish">✿</span>
+      <h4>Choose your piece</h4>
+      <p>Browse Ophelia. Note the colour and your usual size.</p>
+    </li>
+    <li>
+      <span class="step-num">02</span>
+      <span class="step-flourish">✿</span>
+      <h4>Message us</h4>
+      <p>Tap any "Order Here" button — we'll confirm availability and total.</p>
+    </li>
+    <li>
+      <span class="step-num">03</span>
+      <span class="step-flourish">✿</span>
+      <h4>Pay securely</h4>
+      <p>PayNow (SG), DuitNow (MY), or international transfer.</p>
+    </li>
+    <li>
+      <span class="step-num">04</span>
+      <span class="step-flourish">✿</span>
+      <h4>Receive with care</h4>
+      <p>Pre-orders process in 5–10 days, then we send it on its way.</p>
+    </li>
+  </ol>
+  <div class="how-cta">
+    <a class="btn btn-primary btn-lg" data-wa="Hi NUSAÉ 🤍 I'd like to order Ophelia. Could you share what's available?">Order Here</a>
+  </div>
+</section>
+
+<!-- SIZING -->
+<section class="sizing" id="sizing">
+  <div class="section-head">
+    <p class="eyebrow">— Sizing —</p>
+    <h2>One size, made to drape</h2>
+  </div>
+  <div class="sizing-note">
+    <p class="sizing-lede">Ophelia is <em>free size</em> — designed to fall softly across most body shapes.</p>
+    <p class="sizing-body">The cut is relaxed by design. It layers gently over a tank, a slip dress, or whatever you're already wearing — without pulling, tugging, or fussing. No measurements to memorise, no sizes to second-guess.</p>
+    <p class="sizing-body">If you're ever unsure, message us — we'll talk you through how it sits.</p>
+    <a class="btn btn-secondary" data-wa="Hi NUSAÉ 🤍 Just checking — will Ophelia fit me well?">Ask about fit</a>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq" id="faq">
+  <div class="section-head">
+    <p class="eyebrow">— FAQ —</p>
+    <h2>A little guide before you order</h2>
+  </div>
+  <div class="faq-list">
+    <details>
+      <summary>How much do your pieces cost?</summary>
+      <p>Each piece is priced individually and shown on the product. Ophelia is SGD $35. We keep prices simple — what you see is what you pay, before shipping.</p>
+    </details>
+    <details>
+      <summary>Where do you ship from, and how long does it take?</summary>
+      <p>We operate between Malaysia and Singapore and ship out accordingly. Most pieces are pre-order: processing 5–10 days, and shipping varies by destination. Tracking is provided once shipped.</p>
+    </details>
+    <details>
+      <summary>Do you ship worldwide?</summary>
+      <p>Yes — we ship anywhere. International rates are calculated at checkout via DM.</p>
+    </details>
+    <details>
+      <summary>Where do you source your pieces?</summary>
+      <p>We don't design our own pieces. We handpick from trusted suppliers and platforms based on fabric, fit, everyday wearability, and value. If a piece doesn't pass our own wear-test, it doesn't make it here.</p>
+    </details>
+    <details>
+      <summary>How do I order?</summary>
+      <p>Tap any "Order on WhatsApp" button on this page. You can also DM us on Instagram <a href="https://instagram.com/shopnusae" target="_blank" rel="noopener">@shopnusae</a>. We reply daily.</p>
+    </details>
+    <details>
+      <summary>What if it doesn't fit?</summary>
+      <p>Reach out within 3 days of receiving your piece — we'll work something out. Because pieces are pre-order, returns are case-by-case. We'll always be fair.</p>
+    </details>
+  </div>
+</section>
+
+<!-- CLOSING CTA -->
+<section class="closer">
+  <div class="closer-inner">
+    <p class="eyebrow">— Ready when you are —</p>
+    <h2>Your everyday layering piece, made simple.</h2>
+    <a class="btn btn-primary btn-lg" data-wa="Hi NUSAÉ 🤍 I'd like to order Ophelia. Could you share what's available?">Start your order</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-grid">
+    <div>
+      <p class="brand">NUSAÉ</p>
+      <p class="foot-tag">Effortless everyday pieces.<br />Comfortable, modest, timeless.</p>
+    </div>
+    <div>
+      <h5>Shop</h5>
+      <a href="#shop">Ophelia</a>
+      <a href="#sizing">Sizing</a>
+      <a href="#faq">FAQ</a>
+    </div>
+    <div>
+      <h5>Connect</h5>
+      <a href="https://instagram.com/shopnusae" target="_blank" rel="noopener">Instagram</a>
+      <a href="https://threads.com/@shopnusae" target="_blank" rel="noopener">Threads</a>
+      <a data-wa="Hi NUSAÉ 🤍">WhatsApp</a>
+    </div>
+    <div>
+      <h5>Promise</h5>
+      <p class="foot-tag">Handpicked. Breathable. Worldwide shipping. We reply daily.</p>
+    </div>
+  </div>
+  <p class="copy">© <span id="yr"></span> NUSAÉ. All pieces handpicked with care.</p>
+</footer>
+<script>document.getElementById("yr").textContent = new Date().getFullYear();</script>
+
+<script>
+  // Hero image cross-fade
+  (function() {
+    const slides = document.querySelectorAll(".hero-slide");
+    if (slides.length < 2) return;
+    let i = 0;
+    setInterval(() => {
+      slides[i].classList.remove("is-active");
+      i = (i + 1) % slides.length;
+      slides[i].classList.add("is-active");
+    }, 3500);
+  })();
+</script>
+
+</body>
+</html>
