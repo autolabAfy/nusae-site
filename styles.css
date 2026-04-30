@@ -111,6 +111,7 @@ h5 { font-family: var(--sans); font-size: 12px; letter-spacing: 2px; text-transf
 .btn-ghost:hover { border-color: var(--ink); color: var(--ink); }
 .btn-lg { padding: 18px 38px; font-size: 14px; }
 .cta-row { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 28px; }
+.cta-row-center { justify-content: center; }
 
 /* ============ Hero ============ */
 .hero {
