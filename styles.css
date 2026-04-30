@@ -77,6 +77,15 @@ h5 { font-family: var(--sans); font-size: 12px; letter-spacing: 2px; text-transf
   font-size: 28px;
   letter-spacing: 8px;
   font-weight: 400;
+  display: inline-flex;
+  align-items: center;
+  line-height: 0;
+}
+.brand img {
+  height: 56px;
+  width: auto;
+  display: block;
+  mix-blend-mode: multiply;
 }
 .nav nav { display: flex; gap: 32px; }
 .nav nav a { font-size: 13px; letter-spacing: 1px; color: var(--ink-soft); }
@@ -429,7 +438,8 @@ footer { padding: clamp(50px, 6vw, 90px) var(--pad) 28px; }
   max-width: var(--max);
   margin: 0 auto 50px;
 }
-.foot-grid .brand { font-size: 22px; letter-spacing: 6px; margin-bottom: 16px; display: inline-block; }
+.foot-grid .brand { margin-bottom: 16px; display: inline-block; }
+.foot-grid .brand img { height: 64px; }
 .foot-grid a {
   display: block;
   padding: 6px 0;
@@ -459,7 +469,7 @@ footer { padding: clamp(50px, 6vw, 90px) var(--pad) 28px; }
   .trust-row li + li:before { left: -22px; }
   .foot-grid { grid-template-columns: 1fr 1fr; }
   .nav { padding: 16px var(--pad); }
-  .brand { font-size: 24px; letter-spacing: 6px; }
+  .brand img { height: 44px; }
   .btn-ghost { padding: 8px 14px; font-size: 11px; }
 }
 @media (max-width: 540px) {
