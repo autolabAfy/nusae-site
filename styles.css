@@ -82,7 +82,7 @@ h5 { font-family: var(--sans); font-size: 12px; letter-spacing: 2px; text-transf
   line-height: 0;
 }
 .brand img {
-  height: 36px;
+  height: 54px;
   width: auto;
   display: block;
 }
@@ -438,7 +438,7 @@ footer { padding: clamp(50px, 6vw, 90px) var(--pad) 28px; }
   margin: 0 auto 50px;
 }
 .foot-grid .brand { font-size: 22px; letter-spacing: 6px; margin-bottom: 16px; display: inline-flex; }
-.foot-grid .brand img { height: 29px; }
+.foot-grid .brand img { height: 44px; }
 .foot-grid a {
   display: block;
   padding: 6px 0;
@@ -469,7 +469,7 @@ footer { padding: clamp(50px, 6vw, 90px) var(--pad) 28px; }
   .foot-grid { grid-template-columns: 1fr 1fr; }
   .nav { padding: 16px var(--pad); }
   .brand { font-size: 24px; letter-spacing: 6px; }
-  .brand img { height: 31px; }
+  .brand img { height: 47px; }
   .btn-ghost { padding: 8px 14px; font-size: 11px; }
 }
 @media (max-width: 540px) {
