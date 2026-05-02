@@ -19,10 +19,19 @@
   // Example: Singapore +65 9123 4567 -> "6591234567"
   const WA_NUMBER = "6597229061";
   const WA_BASE = (msg) => `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`;
+  const ORDER_TEMPLATE = `Hi NUSAÉ 🤍
+I'd like to order Ophelia.
+
+1.⁠ ⁠Name :
+2.⁠ ⁠⁠Contact :
+3.⁠ ⁠⁠Address :
+4.⁠ ⁠⁠Choice of colour :
+5.⁠ ⁠⁠Mode of payment : PayNow/DuitNow`;
   // ----------------------------------
   document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll("[data-wa]").forEach(a => {
-      a.href = WA_BASE(a.dataset.wa);
+      const msg = a.dataset.waTemplate === "order" ? ORDER_TEMPLATE : a.dataset.wa;
+      a.href = WA_BASE(msg);
       a.target = "_blank";
       a.rel = "noopener";
     });
@@ -43,7 +52,7 @@
     <a href="#sizing">Sizing</a>
     <a href="#faq">FAQ</a>
   </nav>
-  <a class="btn btn-ghost" data-wa="Hi NUSAÉ, I'd like to know what's available 🤍">Order Here</a>
+  <a class="btn btn-ghost" data-wa="" data-wa-template="order">Order Here</a>
 </header>
 
 <!-- HERO -->
@@ -53,7 +62,7 @@
     <h1>Effortless pieces.<br />Made simple.</h1>
     <p class="lede">Comfortable, modest, and timeless. Handpicked styles in breathable fabrics — so getting dressed feels easy, never heavy.</p>
     <div class="cta-row">
-      <a class="btn btn-primary" data-wa="Hi NUSAÉ, I'd like to order Ophelia 🤍">Shop on WhatsApp</a>
+      <a class="btn btn-primary" data-wa="" data-wa-template="order">Shop on WhatsApp</a>
       <a class="btn btn-secondary" href="#shop">View Ophelia</a>
     </div>
     <p class="reply-note">🤍 We usually reply within 2 hours</p>
@@ -119,7 +128,7 @@
       </ul>
 
       <div class="cta-row cta-row-center">
-        <a class="btn btn-primary" data-wa="Hi NUSAÉ 🤍 I'd like to order Ophelia. Colour: ___ (white / beige / grey / black). Could you share availability and payment options?">Order Here</a>
+        <a class="btn btn-primary" data-wa="" data-wa-template="order">Order Here</a>
       </div>
       <p class="reply-note reply-note-center">🤍 We usually reply within 2 hours</p>
     </div>
@@ -160,7 +169,7 @@
     </li>
   </ol>
   <div class="how-cta">
-    <a class="btn btn-primary btn-lg" data-wa="Hi NUSAÉ 🤍 I'd like to order Ophelia. Could you share what's available?">Order Here</a>
+    <a class="btn btn-primary btn-lg" data-wa="" data-wa-template="order">Order Here</a>
     <p class="reply-note reply-note-center">🤍 We usually reply within 2 hours</p>
   </div>
 </section>
@@ -237,7 +246,7 @@
   <div class="closer-inner">
     <p class="eyebrow">— Ready when you are —</p>
     <h2>Your everyday layering piece, made simple.</h2>
-    <a class="btn btn-primary btn-lg" data-wa="Hi NUSAÉ 🤍 I'd like to order Ophelia. Could you share what's available?">Start your order</a>
+    <a class="btn btn-primary btn-lg" data-wa="" data-wa-template="order">Start your order</a>
     <p class="reply-note reply-note-center reply-note-dark">🤍 We usually reply within 2 hours</p>
   </div>
 </section>
@@ -259,7 +268,7 @@
       <h5>Connect</h5>
       <a href="https://instagram.com/shopnusae" target="_blank" rel="noopener">Instagram</a>
       <a href="https://threads.com/@shopnusae" target="_blank" rel="noopener">Threads</a>
-      <a data-wa="Hi NUSAÉ 🤍">WhatsApp</a>
+      <a data-wa="" data-wa-template="order">WhatsApp</a>
     </div>
     <div>
       <h5>Promise</h5>
