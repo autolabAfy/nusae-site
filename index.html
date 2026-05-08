@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=10" />
+<link rel="stylesheet" href="styles.css?v=11" />
 <script>
   // -------- ONE-LINE CONFIG --------
   // Replace WA_NUMBER with your WhatsApp number in international format (no +, no spaces).
@@ -114,10 +114,10 @@ I'd like to order Ophelia.
       <div class="swatches">
         <p class="swatch-label">Available in</p>
         <div class="swatch-row">
-          <span class="swatch swatch-white" title="White"></span>
-          <span class="swatch swatch-beige" title="Beige"></span>
-          <span class="swatch swatch-grey" title="Grey"></span>
-          <span class="swatch swatch-black" title="Black"></span>
+          <button type="button" class="swatch swatch-white" title="White" aria-label="View Ophelia in white" data-color-img="assets/ophelia-meet.jpg"></button>
+          <button type="button" class="swatch swatch-beige" title="Beige" aria-label="View Ophelia in beige" data-color-img="assets/ophelia-product-beige.jpg"></button>
+          <button type="button" class="swatch swatch-grey" title="Grey" aria-label="View Ophelia in grey" data-color-img="assets/ophelia-product-grey.jpg"></button>
+          <button type="button" class="swatch swatch-black" title="Black" aria-label="View Ophelia in black" data-color-img="assets/ophelia-product-black.jpg"></button>
         </div>
       </div>
 
@@ -291,6 +291,20 @@ I'd like to order Ophelia.
       i = (i + 1) % slides.length;
       slides[i].classList.add("is-active");
     }, 3500);
+  })();
+
+  // Colour swatches → swap main product image
+  (function() {
+    const main = document.getElementById("mainImage");
+    const swatches = document.querySelectorAll(".swatch[data-color-img]");
+    if (!main || !swatches.length) return;
+    swatches.forEach(sw => {
+      sw.addEventListener("click", () => {
+        main.src = sw.dataset.colorImg;
+        swatches.forEach(s => s.classList.remove("is-selected"));
+        sw.classList.add("is-selected");
+      });
+    });
   })();
 </script>
 
