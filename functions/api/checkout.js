@@ -6,7 +6,17 @@ const PRICE_SGD = 35;
 const HITPAY_ENDPOINT = 'https://api.hit-pay.com/v1/payment-requests';
 const ALLOWED_COLOURS = new Set(['white', 'beige', 'grey', 'black']);
 
-export async function onRequestPost({ request, env }) {
+export async function onRequestPost(context) {
+  try {
+    return await handle(context);
+  } catch (err) {
+    return json({ error: 'Server error', message: String(err && err.message || err), stack: String(err && err.stack || '') }, 500);
+  }
+}
+
+async function handle({ request, env }) {
+  if (!env.HITPAY_API_KEY) return json({ error: 'Missing HITPAY_API_KEY env var' }, 500);
+
   let payload;
   try {
     payload = await request.json();
@@ -31,7 +41,7 @@ export async function onRequestPost({ request, env }) {
     email,
     name: `${firstName} ${lastName}`.trim(),
     phone: contact,
-    purpose: `NUSAÉ Ophelia · ${itemsSummary}`,
+    purpose: `NUSAE Ophelia - ${itemsSummary}`,
     reference_number: orderId,
     payment_methods: ['paynow_online', 'card'],
     redirect_url: `${origin}/thank-you?order=${encodeURIComponent(orderId)}`,
@@ -39,7 +49,7 @@ export async function onRequestPost({ request, env }) {
     send_email: true
   };
 
-  let hitpayRes;
+  let hitpayRes, hitpayText;
   try {
     hitpayRes = await fetch(HITPAY_ENDPOINT, {
       method: 'POST',
@@ -50,13 +60,22 @@ export async function onRequestPost({ request, env }) {
       },
       body: JSON.stringify(hitpayBody)
     });
+    hitpayText = await hitpayRes.text();
   } catch (err) {
-    return json({ error: 'Payment provider unreachable' }, 502);
+    return json({ error: 'Payment provider unreachable', message: String(err && err.message || err) }, 400);
   }
 
-  const hitpay = await hitpayRes.json().catch(() => ({}));
+  let hitpay;
+  try { hitpay = JSON.parse(hitpayText); } catch (_) { hitpay = {}; }
   if (!hitpayRes.ok || !hitpay.url) {
-    return json({ error: 'Failed to create payment', detail: hitpay }, 502);
+    // Return 400 (not 5xx) so Cloudflare doesn't replace the body with a generic edge error.
+    const friendly = hitpay && (hitpay.error_message || hitpay.message)
+      || 'Could not start payment — please try again or contact us.';
+    return json({
+      error: friendly,
+      hitpay_status: hitpayRes.status,
+      detail: hitpay
+    }, 400);
   }
 
   // Log the order to the sheet (best-effort; don't block payment if this fails)
