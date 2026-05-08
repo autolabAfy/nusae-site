@@ -86,6 +86,13 @@
       answer_ms: "Sila <strong>basuh tangan sahaja</strong> dan <strong>jangan gosok</strong> — lace ini halus, dan langkah ini membantu Ophelia kekal cantik dan lembut 🤍"
     },
     {
+      id: "fabric",
+      keywords: ["fabric", "material", "made of", "made from", "what is it made", "what's it made", "polyester", "cotton", "composition", "made out of",
+                 "kain", "diperbuat", "buat dari", "bahan"],
+      answer_en: "Our pieces are made with a <strong>polyester blend</strong> fabric — chosen for its lightweight feel, durability, and effortless everyday wear ✨<br>The fabric helps the garment hold its shape beautifully while remaining comfortable, breathable, easy to care for, and less prone to wrinkling 🤍",
+      answer_ms: "Pieces kami diperbuat daripada <strong>polyester blend</strong> — dipilih kerana ringan, tahan lama, dan selesa untuk pakaian harian ✨<br>Kain ini membantu pakaian mengekalkan bentuknya, selesa, breathable, mudah dijaga, dan tidak mudah berkedut 🤍"
+    },
+    {
       id: "colors",
       keywords: ["colour", "color", "colours", "colors", "what colours", "available colours", "shade",
                  "warna", "warna apa"],
