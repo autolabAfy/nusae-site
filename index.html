@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=11" />
+<link rel="stylesheet" href="styles.css?v=12" />
 <script>
   // -------- ONE-LINE CONFIG --------
   // Replace WA_NUMBER with your WhatsApp number in international format (no +, no spaces).
@@ -128,13 +128,74 @@ I'd like to order Ophelia.
         <li><strong>Status</strong> Pre-order · Processing 5–10 days</li>
       </ul>
 
-      <div class="cta-row cta-row-center">
-        <a class="btn btn-primary" data-wa="" data-wa-template="order">Order Here</a>
+      <div class="cta-row cta-row-center cta-row-stack">
+        <a class="btn btn-primary" href="#order" data-open-checkout>Order &amp; Pay Now</a>
+        <a class="btn btn-ghost" data-wa="" data-wa-template="order">Order via WhatsApp</a>
       </div>
+      <p class="pay-methods">Pay with PayNow QR or Card · Secure checkout by HitPay</p>
       <p class="reply-note reply-note-center">🤍 We usually reply within 2 hours</p>
     </div>
   </div>
 </section>
+
+<!-- ORDER & CHECKOUT MODAL -->
+<div class="checkout-overlay" id="checkoutOverlay" role="dialog" aria-modal="true" aria-labelledby="checkoutTitle" hidden>
+  <div class="checkout-card">
+    <button type="button" class="checkout-close" id="checkoutClose" aria-label="Close">×</button>
+    <div class="checkout-head">
+      <p class="eyebrow">— Checkout —</p>
+      <h3 id="checkoutTitle">Order Ophelia</h3>
+      <p class="checkout-sub">Fill in your details and we'll take you to secure payment.</p>
+    </div>
+
+    <form class="checkout-form" id="checkoutForm" novalidate>
+      <div class="field-row">
+        <label class="field">
+          <span>First name</span>
+          <input type="text" name="firstName" autocomplete="given-name" required maxlength="60" />
+        </label>
+        <label class="field">
+          <span>Last name</span>
+          <input type="text" name="lastName" autocomplete="family-name" required maxlength="60" />
+        </label>
+      </div>
+
+      <label class="field">
+        <span>Email</span>
+        <input type="email" name="email" autocomplete="email" required maxlength="120" />
+      </label>
+
+      <label class="field">
+        <span>Contact number</span>
+        <input type="tel" name="contact" autocomplete="tel" required maxlength="30" placeholder="+65 9123 4567" />
+      </label>
+
+      <label class="field">
+        <span>Shipping address</span>
+        <textarea name="address" autocomplete="street-address" required rows="3" maxlength="500" placeholder="Full address including unit, postal code, country"></textarea>
+      </label>
+
+      <fieldset class="items-block">
+        <legend>Pieces — choose colour &amp; quantity</legend>
+        <div class="items-list" id="itemsList"></div>
+        <button type="button" class="btn-link" id="addItemBtn">+ Add another colour</button>
+      </fieldset>
+
+      <div class="totals">
+        <span class="totals-label">Total</span>
+        <span class="totals-amount" id="totalAmount">SGD $35</span>
+      </div>
+
+      <p class="checkout-note">After clicking continue you'll be redirected to HitPay to pay via PayNow QR or Card.</p>
+
+      <button type="submit" class="btn btn-primary btn-lg checkout-submit" id="checkoutSubmit">
+        <span class="checkout-submit-label">Continue to payment</span>
+        <span class="checkout-submit-loading" hidden>Redirecting…</span>
+      </button>
+      <p class="checkout-error" id="checkoutError" hidden></p>
+    </form>
+  </div>
+</div>
 
 <!-- HOW TO ORDER -->
 <section class="how" id="how">
@@ -304,6 +365,138 @@ I'd like to order Ophelia.
         swatches.forEach(s => s.classList.remove("is-selected"));
         sw.classList.add("is-selected");
       });
+    });
+  })();
+
+  // Checkout modal + HitPay flow
+  (function() {
+    const PRICE = 35;
+    const COLOURS = ["white", "beige", "grey", "black"];
+    const overlay = document.getElementById("checkoutOverlay");
+    const closeBtn = document.getElementById("checkoutClose");
+    const form = document.getElementById("checkoutForm");
+    const itemsList = document.getElementById("itemsList");
+    const addItemBtn = document.getElementById("addItemBtn");
+    const totalEl = document.getElementById("totalAmount");
+    const submitBtn = document.getElementById("checkoutSubmit");
+    const errorEl = document.getElementById("checkoutError");
+    if (!overlay || !form) return;
+
+    function makeRow(colour = "white", qty = 1) {
+      const row = document.createElement("div");
+      row.className = "item-row";
+      row.innerHTML = `
+        <select class="item-colour" name="colour">
+          ${COLOURS.map(c => `<option value="${c}" ${c === colour ? "selected" : ""}>${c[0].toUpperCase() + c.slice(1)}</option>`).join("")}
+        </select>
+        <div class="qty-control">
+          <button type="button" class="qty-btn" data-step="-1" aria-label="Decrease">−</button>
+          <input class="item-qty" name="qty" type="number" min="1" max="20" value="${qty}" />
+          <button type="button" class="qty-btn" data-step="1" aria-label="Increase">+</button>
+        </div>
+        <button type="button" class="item-remove" aria-label="Remove">×</button>
+      `;
+      itemsList.appendChild(row);
+      bindRow(row);
+      updateTotals();
+      return row;
+    }
+
+    function bindRow(row) {
+      row.querySelector(".item-colour").addEventListener("change", updateTotals);
+      row.querySelector(".item-qty").addEventListener("input", updateTotals);
+      row.querySelectorAll(".qty-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const input = row.querySelector(".item-qty");
+          const step = parseInt(btn.dataset.step, 10);
+          const next = Math.max(1, Math.min(20, (parseInt(input.value, 10) || 1) + step));
+          input.value = next;
+          updateTotals();
+        });
+      });
+      row.querySelector(".item-remove").addEventListener("click", () => {
+        if (itemsList.children.length <= 1) return;
+        row.remove();
+        updateTotals();
+      });
+    }
+
+    function updateTotals() {
+      let qty = 0;
+      itemsList.querySelectorAll(".item-row").forEach(r => {
+        qty += parseInt(r.querySelector(".item-qty").value, 10) || 0;
+      });
+      const total = qty * PRICE;
+      totalEl.textContent = `SGD $${total}`;
+    }
+
+    function readItems() {
+      return Array.from(itemsList.querySelectorAll(".item-row")).map(r => ({
+        colour: r.querySelector(".item-colour").value,
+        qty: parseInt(r.querySelector(".item-qty").value, 10) || 1
+      }));
+    }
+
+    function open() {
+      if (!itemsList.children.length) makeRow();
+      overlay.hidden = false;
+      document.body.style.overflow = "hidden";
+      setTimeout(() => form.querySelector("input,select,textarea")?.focus(), 50);
+    }
+
+    function close() {
+      overlay.hidden = true;
+      document.body.style.overflow = "";
+      errorEl.hidden = true;
+      errorEl.textContent = "";
+    }
+
+    document.querySelectorAll("[data-open-checkout]").forEach(el => {
+      el.addEventListener("click", e => { e.preventDefault(); open(); });
+    });
+    closeBtn.addEventListener("click", close);
+    overlay.addEventListener("click", e => { if (e.target === overlay) close(); });
+    document.addEventListener("keydown", e => { if (e.key === "Escape" && !overlay.hidden) close(); });
+    addItemBtn.addEventListener("click", () => makeRow());
+
+    // Open if URL has #order
+    if (window.location.hash === "#order") open();
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      errorEl.hidden = true;
+      submitBtn.disabled = true;
+      submitBtn.querySelector(".checkout-submit-label").hidden = true;
+      submitBtn.querySelector(".checkout-submit-loading").hidden = false;
+
+      const fd = new FormData(form);
+      const payload = {
+        firstName: (fd.get("firstName") || "").trim(),
+        lastName: (fd.get("lastName") || "").trim(),
+        email: (fd.get("email") || "").trim(),
+        contact: (fd.get("contact") || "").trim(),
+        address: (fd.get("address") || "").trim(),
+        items: readItems()
+      };
+
+      try {
+        const res = await fetch("/api/checkout", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (!res.ok || !data.url) {
+          throw new Error(data.error || "Could not start payment. Please try again.");
+        }
+        window.location.href = data.url;
+      } catch (err) {
+        errorEl.textContent = err.message || "Something went wrong. Please try again.";
+        errorEl.hidden = false;
+        submitBtn.disabled = false;
+        submitBtn.querySelector(".checkout-submit-label").hidden = false;
+        submitBtn.querySelector(".checkout-submit-loading").hidden = true;
+      }
     });
   })();
 </script>

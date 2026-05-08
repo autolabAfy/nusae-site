@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Thank you — NUSAÉ</title>
+<meta name="robots" content="noindex" />
+<link rel="icon" type="image/png" href="assets/logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css?v=12" />
+<style>
+  .ty-wrap {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 24px;
+    background: var(--cream);
+  }
+  .ty-card {
+    max-width: 560px;
+    text-align: center;
+  }
+  .ty-card .eyebrow { color: var(--accent-deep); }
+  .ty-card h1 {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: clamp(34px, 5vw, 48px);
+    margin: 8px 0 14px;
+    color: var(--ink);
+  }
+  .ty-card p { color: var(--ink-soft); line-height: 1.65; }
+  .ty-id {
+    font-family: var(--sans);
+    font-size: 12px;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 28px 0 12px;
+  }
+  .ty-id code {
+    background: #fff;
+    border: 1px solid var(--line);
+    padding: 6px 12px;
+    border-radius: 3px;
+    color: var(--ink);
+    font-family: 'SFMono-Regular', Menlo, monospace;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+  }
+  .ty-actions { margin-top: 32px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+</style>
+</head>
+<body>
+<div class="ty-wrap">
+  <div class="ty-card">
+    <p class="eyebrow">— Order received —</p>
+    <h1>Thank you 🤍</h1>
+    <p>Your payment is being processed. You'll receive an email confirmation once it clears, and we'll start preparing your Ophelia.</p>
+    <p>Pre-orders ship within 5–10 days. We'll keep you updated via WhatsApp.</p>
+    <p class="ty-id">Order reference<br><code id="orderRef">—</code></p>
+    <div class="ty-actions">
+      <a class="btn btn-secondary" href="/">Back to NUSAÉ</a>
+      <a class="btn btn-primary" href="https://instagram.com/shopnusae" target="_blank" rel="noopener">Follow @shopnusae</a>
+    </div>
+  </div>
+</div>
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const ref = params.get('order') || params.get('reference');
+  if (ref) document.getElementById('orderRef').textContent = ref;
+</script>
+</body>
+</html>
