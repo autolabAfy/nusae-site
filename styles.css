@@ -814,3 +814,238 @@ footer { padding: clamp(50px, 6vw, 90px) var(--pad) 28px; }
   .checkout-card { padding: 28px 20px 22px; }
   .field-row { grid-template-columns: 1fr; }
 }
+
+/* ==================== NUSAÉ Assistant chatbot ==================== */
+.nusae-chat-bubble {
+  position: fixed;
+  bottom: 22px;
+  right: 22px;
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: var(--ink, #1F1A14);
+  color: var(--cream, #F5EFE6);
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(31, 26, 20, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9998;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+}
+.nusae-chat-bubble:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(31, 26, 20, 0.32); }
+.nusae-chat-bubble.hidden { opacity: 0; pointer-events: none; transform: scale(0.8); }
+.nusae-chat-dot {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #6FBE6F;
+  box-shadow: 0 0 0 2px var(--ink, #1F1A14);
+}
+
+.nusae-chat-panel {
+  position: fixed;
+  bottom: 22px;
+  right: 22px;
+  width: 360px;
+  max-width: calc(100vw - 28px);
+  height: 540px;
+  max-height: calc(100vh - 44px);
+  background: #FFFCF7;
+  border: 1px solid rgba(31, 26, 20, 0.08);
+  border-radius: 14px;
+  box-shadow: 0 20px 60px rgba(31, 26, 20, 0.22);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 9999;
+  font-family: 'Inter', system-ui, sans-serif;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(12px) scale(0.98);
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+.nusae-chat-panel.open { opacity: 1; pointer-events: auto; transform: translateY(0) scale(1); }
+
+.nusae-chat-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  background: var(--ink, #1F1A14);
+  color: var(--cream, #F5EFE6);
+}
+.nusae-chat-id { display: flex; align-items: center; gap: 10px; }
+.nusae-chat-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--accent, #C9A977);
+  color: var(--ink, #1F1A14);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600;
+  font-size: 18px;
+  letter-spacing: 0.5px;
+}
+.nusae-chat-name { font-size: 14px; font-weight: 500; letter-spacing: 0.3px; }
+.nusae-chat-sub  { font-size: 11px; opacity: 0.7; margin-top: 2px; }
+.nusae-chat-close {
+  background: transparent;
+  border: none;
+  color: var(--cream, #F5EFE6);
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  transition: background 0.15s ease;
+}
+.nusae-chat-close:hover { background: rgba(245, 239, 230, 0.15); }
+
+.nusae-chat-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: #FFFCF7;
+}
+.nusae-chat-msg {
+  max-width: 85%;
+  padding: 10px 13px;
+  border-radius: 14px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  word-wrap: break-word;
+}
+.nusae-chat-msg.bot {
+  background: #F5EFE6;
+  color: var(--ink, #1F1A14);
+  align-self: flex-start;
+  border-bottom-left-radius: 4px;
+}
+.nusae-chat-msg.user {
+  background: var(--ink, #1F1A14);
+  color: var(--cream, #F5EFE6);
+  align-self: flex-end;
+  border-bottom-right-radius: 4px;
+}
+.nusae-chat-msg a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.nusae-chat-msg.bot a { color: #6B4F1B; }
+
+.nusae-chat-typing { display: inline-flex; gap: 4px; padding: 12px 14px; }
+.nusae-chat-typing span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(31, 26, 20, 0.4);
+  animation: nusae-bounce 1.2s infinite;
+}
+.nusae-chat-typing span:nth-child(2) { animation-delay: 0.15s; }
+.nusae-chat-typing span:nth-child(3) { animation-delay: 0.3s; }
+@keyframes nusae-bounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30% { transform: translateY(-4px); opacity: 1; }
+}
+
+.nusae-chat-suggested {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 0 16px 10px;
+  background: #FFFCF7;
+}
+.nusae-chat-chip {
+  background: transparent;
+  border: 1px solid rgba(31, 26, 20, 0.18);
+  color: var(--ink, #1F1A14);
+  padding: 6px 11px;
+  border-radius: 999px;
+  font-size: 12px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.nusae-chat-chip:hover {
+  background: var(--cream, #F5EFE6);
+  border-color: var(--accent, #C9A977);
+}
+
+.nusae-chat-form {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-top: 1px solid rgba(31, 26, 20, 0.08);
+  background: #FFFCF7;
+}
+.nusae-chat-form input {
+  flex: 1;
+  border: 1px solid rgba(31, 26, 20, 0.15);
+  border-radius: 999px;
+  padding: 9px 14px;
+  font-size: 13.5px;
+  font-family: inherit;
+  color: var(--ink, #1F1A14);
+  background: #fff;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+.nusae-chat-form input:focus { border-color: var(--accent, #C9A977); }
+.nusae-chat-form button {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--ink, #1F1A14);
+  color: var(--cream, #F5EFE6);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.15s ease;
+}
+.nusae-chat-form button:hover { opacity: 0.85; }
+
+.nusae-chat-wa {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 9px 12px;
+  background: #25D366;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 500;
+  text-decoration: none;
+  letter-spacing: 0.2px;
+  transition: background 0.15s ease;
+}
+.nusae-chat-wa:hover { background: #1FB755; }
+
+@media (max-width: 540px) {
+  .nusae-chat-bubble { bottom: 18px; right: 18px; width: 54px; height: 54px; }
+  .nusae-chat-panel {
+    bottom: 0;
+    right: 0;
+    left: 0;
+    width: 100%;
+    max-width: 100%;
+    height: 92vh;
+    max-height: 92vh;
+    border-radius: 14px 14px 0 0;
+  }
+}
