@@ -1,31 +1,38 @@
 // POST /api/hitpay-webhook
 // HitPay calls this when a payment status changes.
-// We verify HMAC-SHA256(payload, salt) matches the Hitpay-Signature header,
-// then notify the Apps Script (which marks the row paid + emails Natalia).
+// Legacy payment-request webhook signs by:
+//   1. Take all body fields except `hmac`
+//   2. Sort keys alphabetically
+//   3. Concatenate as `key1value1key2value2...` (no separators)
+//   4. HMAC-SHA256(concatenated, HITPAY_SALT) hex == provided hmac
+// Body arrives as JSON or form-urlencoded.
 
 export async function onRequestPost({ request, env }) {
   const rawBody = await request.text();
-  const signature = request.headers.get('hitpay-signature') || '';
-
-  if (!signature) {
-    return new Response('Missing signature', { status: 400 });
-  }
-  const valid = await verifyHmac(rawBody, signature, env.HITPAY_SALT);
-  if (!valid) {
-    return new Response('Invalid signature', { status: 401 });
-  }
 
   let data;
   try {
     data = JSON.parse(rawBody);
   } catch (_) {
-    // HitPay also supports form-urlencoded — try that
     data = Object.fromEntries(new URLSearchParams(rawBody).entries());
   }
 
-  // HitPay payment-request webhook fields:
-  //   status (completed | failed | pending), payment_id, payment_request_id,
-  //   reference_number, amount, currency, payment_type
+  const providedHmac = (data.hmac || '').toString();
+  if (!providedHmac) {
+    return new Response('Missing hmac field', { status: 400 });
+  }
+
+  const fields = { ...data };
+  delete fields.hmac;
+
+  const sortedKeys = Object.keys(fields).sort();
+  const message = sortedKeys.map(k => `${k}${fields[k]}`).join('');
+
+  const valid = await verifyHmac(message, providedHmac, env.HITPAY_SALT);
+  if (!valid) {
+    return new Response('Invalid signature', { status: 401 });
+  }
+
   if (data.status === 'completed' && data.reference_number && env.GAS_WEBHOOK_URL) {
     try {
       await fetch(env.GAS_WEBHOOK_URL, {
@@ -38,7 +45,7 @@ export async function onRequestPost({ request, env }) {
           payment: {
             payment_id: data.payment_id || '',
             payment_request_id: data.payment_request_id || '',
-            payment_method: data.payment_type || '',
+            payment_method: data.payment_type || data.payment_method || 'PayNow',
             amount: data.amount || '',
             currency: data.currency || 'SGD'
           }

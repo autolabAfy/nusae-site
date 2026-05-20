@@ -2,7 +2,7 @@
 // Receives order form, creates HitPay payment-request, logs order to Sheet via Apps Script.
 // Returns { url, id } so the browser can redirect to HitPay's hosted checkout.
 
-const PRICE_SGD = 35;
+const PRICE_SGD = 38;
 const HITPAY_ENDPOINT = 'https://api.hit-pay.com/v1/payment-requests';
 const ALLOWED_COLOURS = new Set(['white', 'beige', 'grey', 'black']);
 
@@ -88,7 +88,9 @@ async function handle({ request, env }) {
       contact,
       address,
       items,
-      total_sgd: totalSgd
+      total_sgd: totalSgd,
+      payment_url: hitpay.url,
+      payment_request_id: hitpay.id
     };
     // Fire-and-forget but await so Cloudflare doesn't kill it on response
     try {

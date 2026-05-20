@@ -1,0 +1,37 @@
+{
+  "routes": [
+    {
+      "routePath": "/api/admin/payment-status",
+      "mountPath": "/api/admin",
+      "method": "POST",
+      "module": [
+        "api/admin/payment-status.js:onRequestPost"
+      ]
+    },
+    {
+      "routePath": "/api/admin/recovery-link",
+      "mountPath": "/api/admin",
+      "method": "POST",
+      "module": [
+        "api/admin/recovery-link.js:onRequestPost"
+      ]
+    },
+    {
+      "routePath": "/api/checkout",
+      "mountPath": "/api",
+      "method": "POST",
+      "module": [
+        "api/checkout.js:onRequestPost"
+      ]
+    },
+    {
+      "routePath": "/api/hitpay-webhook",
+      "mountPath": "/api",
+      "method": "POST",
+      "module": [
+        "api/hitpay-webhook.js:onRequestPost"
+      ]
+    }
+  ],
+  "baseURL": "/"
+}

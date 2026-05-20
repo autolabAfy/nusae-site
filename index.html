@@ -27,7 +27,7 @@ I'd like to order Ophelia.
 3.⁠ ⁠⁠Address :
 4.⁠ ⁠⁠Choice of colour :
 5.⁠ ⁠Quantity :
-6.⁠ ⁠⁠Mode of payment : PayNow/DuitNow`;
+6.⁠ ⁠⁠Mode of payment : PayNow / Card`;
   // ----------------------------------
   document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll("[data-wa]").forEach(a => {
@@ -42,7 +42,7 @@ I'd like to order Ophelia.
 <body>
 
 <!-- ANNOUNCEMENT BAR -->
-<div class="announce">🌍 Worldwide shipping · 💌 Order in under 2 minutes via WhatsApp</div>
+<div class="announce">✿ Breathable, lightweight, effortless pieces · 🌍 Worldwide shipping</div>
 
 <!-- NAV -->
 <header class="nav">
@@ -53,7 +53,7 @@ I'd like to order Ophelia.
     <a href="#sizing">Sizing</a>
     <a href="#faq">FAQ</a>
   </nav>
-  <a class="btn btn-ghost" data-wa="" data-wa-template="order">Order Here</a>
+  <a class="btn btn-ghost" href="#order" data-open-checkout>Order &amp; Pay Now</a>
 </header>
 
 <!-- HERO -->
@@ -63,10 +63,8 @@ I'd like to order Ophelia.
     <h1>Effortless pieces.<br />Made simple.</h1>
     <p class="lede">Comfortable, modest, and timeless. Handpicked styles in breathable fabrics — so getting dressed feels easy, never heavy.</p>
     <div class="cta-row">
-      <a class="btn btn-primary" data-wa="" data-wa-template="order">Shop on WhatsApp</a>
-      <a class="btn btn-secondary" href="#shop">View Ophelia</a>
+      <a class="btn btn-primary" href="#shop">View Ophelia</a>
     </div>
-    <p class="reply-note">🤍 We usually reply within 2 hours</p>
   </div>
   <div class="hero-art">
     <div class="hero-slides">
@@ -104,7 +102,7 @@ I'd like to order Ophelia.
 
     <div class="product-info">
       <h3>Ophelia Lace Outerwear</h3>
-      <p class="price">SGD $35</p>
+      <p class="price">SGD $38</p>
       <p class="price-reassurance">Doesn't sit right? Let us know and we'll process an exchange or full refund. No questions asked.</p>
       <p class="product-tagline">Lightweight, breathable, and effortlessly modest.</p>
       <p class="product-copy">Crafted with soft lace and a relaxed fit, Ophelia gives you that extra layer of coverage without feeling heavy or restrictive. The airy fabric and flowy silhouette make it perfect for all-day wear — comfortable, easy, and flattering.</p>
@@ -132,8 +130,7 @@ I'd like to order Ophelia.
         <a class="btn btn-primary" href="#order" data-open-checkout>Order &amp; Pay Now</a>
         <a class="btn btn-ghost" data-wa="" data-wa-template="order">Order via WhatsApp</a>
       </div>
-      <p class="pay-methods">Pay with PayNow QR or Card · Secure checkout by HitPay</p>
-      <p class="reply-note reply-note-center">🤍 We usually reply within 2 hours</p>
+      <p class="pay-methods">Pay with PayNow &amp; Card · Secure checkout by HitPay</p>
     </div>
   </div>
 </section>
@@ -183,10 +180,10 @@ I'd like to order Ophelia.
 
       <div class="totals">
         <span class="totals-label">Total</span>
-        <span class="totals-amount" id="totalAmount">SGD $35</span>
+        <span class="totals-amount" id="totalAmount">SGD $38</span>
       </div>
 
-      <p class="checkout-note">After clicking continue you'll be redirected to HitPay to pay via PayNow QR or Card.</p>
+      <p class="checkout-note">After clicking continue you'll be redirected to HitPay to pay via PayNow or Card.</p>
 
       <button type="submit" class="btn btn-primary btn-lg checkout-submit" id="checkoutSubmit">
         <span class="checkout-submit-label">Continue to payment</span>
@@ -214,14 +211,14 @@ I'd like to order Ophelia.
     <li>
       <span class="step-num">02</span>
       <span class="step-flourish">✿</span>
-      <h4>Message us</h4>
-      <p>Tap any "Order Here" button — we'll confirm availability and total.</p>
+      <h4>Place your order</h4>
+      <p>Tap any "Order &amp; Pay Now" button — fill in your details and we'll take you to secure payment.</p>
     </li>
     <li>
       <span class="step-num">03</span>
       <span class="step-flourish">✿</span>
       <h4>Pay securely</h4>
-      <p>PayNow (SG), DuitNow (MY), or international transfer.</p>
+      <p>PayNow &amp; Card — secure checkout by HitPay.</p>
     </li>
     <li>
       <span class="step-num">04</span>
@@ -231,8 +228,9 @@ I'd like to order Ophelia.
     </li>
   </ol>
   <div class="how-cta">
-    <a class="btn btn-primary btn-lg" data-wa="" data-wa-template="order">Order Here</a>
-    <p class="reply-note reply-note-center">🤍 We usually reply within 2 hours</p>
+    <a class="btn btn-primary btn-lg" href="#order" data-open-checkout>Order &amp; Pay Now</a>
+    <a class="btn btn-ghost" data-wa="" data-wa-template="order">Order via WhatsApp</a>
+    <p class="pay-methods">Pay with PayNow &amp; Card · Secure checkout by HitPay</p>
   </div>
 </section>
 
@@ -247,7 +245,6 @@ I'd like to order Ophelia.
     <p class="sizing-body">The cut is relaxed by design. It layers gently over a tank, a slip dress, or whatever you're already wearing — without pulling, tugging, or fussing. No measurements to memorise, no sizes to second-guess.</p>
     <p class="sizing-body">If you're ever unsure, message us — we'll talk you through how it sits.</p>
     <a class="btn btn-secondary" data-wa="Hi NUSAÉ 🤍 Just checking — will Ophelia fit me well?">Ask about fit</a>
-    <p class="reply-note reply-note-center">🤍 We usually reply within 2 hours</p>
   </div>
 </section>
 
@@ -259,28 +256,44 @@ I'd like to order Ophelia.
   </div>
   <div class="faq-list">
     <details>
-      <summary>How much do your pieces cost?</summary>
-      <p>Each piece is priced individually and shown on the product. Ophelia is SGD $35. We keep prices simple. Free shipping for SG &amp; MY orders.</p>
+      <summary>What is Ophelia?</summary>
+      <p>A lace fringe layering piece, made to drape softly over the everyday wardrobe you already own. One simple price — SGD $38 — and one thoughtful cut, hand-finished by artisans in Nepal. It's the kind of piece that quietly elevates a plain tee or a slip dress without ever feeling fussy.</p>
     </details>
     <details>
-      <summary>Where do you ship from, and how long does it take?</summary>
-      <p>We operate between Malaysia and Singapore and ship out accordingly. Most pieces are pre-order: processing 5–10 days, and shipping varies by destination. We will be updating your order progress via WhatsApp. This is to ensure transparency and clear communication with our customers.</p>
+      <summary>Why is Ophelia sold by pre-order?</summary>
+      <p>Each piece is made with intention rather than rushed through factories — so we open orders, gather them, and the artisans hand-finish your Ophelia after you've ordered it. It keeps quality high, prices fair, and means we never sit on mountains of unsold inventory. Processing is 5–10 working days before dispatch.</p>
     </details>
     <details>
-      <summary>Do you ship worldwide?</summary>
-      <p>Yes — we ship anywhere. International rates are calculated at checkout via DM.</p>
+      <summary>What's the fabric — will it scratch, shrink or fade?</summary>
+      <p>Polyester lace with a breathable lining. It feels light against skin, doesn't itch, and won't shrink on a gentle hand-wash. Colour stays true when kept out of direct sun. No surprises after the first wear.</p>
     </details>
     <details>
-      <summary>Where do you source your pieces?</summary>
-      <p>We don't design our own pieces. We handpick from trusted suppliers and platforms based on fabric, fit, everyday wearability, and value. If a piece doesn't pass our own wear-test, it doesn't make it here.</p>
+      <summary>Does one size really fit everyone?</summary>
+      <p>Ophelia is free-size by design — it's cut to drape loosely, not to hug. It sits beautifully on frames from roughly XS to XL (bust 32–42"), worn over a tank, a slip dress, or whatever you're already in. If you're between sizes anywhere else, you'll still be fine here. Message us if you'd like a sanity check before ordering.</p>
     </details>
     <details>
-      <summary>How do I order?</summary>
-      <p>Tap any "Order on WhatsApp" button on this page. You can also DM us on Instagram <a href="https://instagram.com/shopnusae" target="_blank" rel="noopener">@shopnusae</a>. We reply daily.</p>
+      <summary>How do I style it?</summary>
+      <p>Three easy ways: layered over a fitted tee and jeans for the everyday; over a slip dress for dinner; or on its own as a beach cover-up. The fringe catches light beautifully in photos — most of our customers tell us it looks even better in person than online.</p>
     </details>
     <details>
-      <summary>What if it doesn't fit?</summary>
-      <p>Reach out within 3 days of receiving your piece — we'll work something out. Because pieces are pre-order, returns are case-by-case. We'll always be fair.</p>
+      <summary>How do I care for my Ophelia?</summary>
+      <p>Hand-wash in cold water with a mild detergent. Don't wring the lace — gently press the water out. Lay flat to dry, away from direct sun. No tumble dryer, no iron on the lace. Treated this way, Ophelia softens with each wear and lasts for years.</p>
+    </details>
+    <details>
+      <summary>When will my order ship and arrive?</summary>
+      <p>5–10 working days to hand-finish and pack, then we dispatch from our base between Singapore and Malaysia. SG and MY usually arrive within a week of dispatch. International is typically 7–14 days, depending on country. You'll get a tracking update via WhatsApp at every step — never wondering where your parcel is.</p>
+    </details>
+    <details>
+      <summary>What if it doesn't fit — can I exchange or return?</summary>
+      <p>Message us within 3 days of delivery and we'll work it out with you personally. Because every piece is made to order, we handle each case ourselves rather than running it through a returns portal. We've never left someone unhappy and we don't plan to start.</p>
+    </details>
+    <details>
+      <summary>Do you ship worldwide? What about customs?</summary>
+      <p>Yes — anywhere with a postal service. International shipping is calculated live at checkout, so there are no surprise fees from us. Customs duties (if any) are set by your country's import rules and are the buyer's responsibility. We'll always declare honestly on the parcel.</p>
+    </details>
+    <details>
+      <summary>Will Ophelia restock? Are other pieces coming?</summary>
+      <p>Because we're pre-order, Ophelia doesn't "sell out" the same way — every order is freshly made. New pieces are quietly in development. The fastest way to know when they drop is to follow <a href="https://instagram.com/shopnusae" target="_blank" rel="noopener">@shopnusae</a> on Instagram.</p>
     </details>
   </div>
 </section>
@@ -309,7 +322,6 @@ I'd like to order Ophelia.
     <p class="eyebrow">— Ready when you are —</p>
     <h2>Your everyday layering piece, made simple.</h2>
     <a class="btn btn-primary btn-lg" data-wa="" data-wa-template="order">Start your order</a>
-    <p class="reply-note reply-note-center reply-note-dark">🤍 We usually reply within 2 hours</p>
   </div>
 </section>
 
@@ -370,7 +382,7 @@ I'd like to order Ophelia.
 
   // Checkout modal + HitPay flow
   (function() {
-    const PRICE = 35;
+    const PRICE = 38;
     const COLOURS = ["white", "beige", "grey", "black"];
     const overlay = document.getElementById("checkoutOverlay");
     const closeBtn = document.getElementById("checkoutClose");
