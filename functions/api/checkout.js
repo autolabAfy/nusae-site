@@ -2,7 +2,7 @@
 // Receives order form, creates HitPay payment-request, logs order to Sheet via Apps Script.
 // Returns { url, id } so the browser can redirect to HitPay's hosted checkout.
 
-const PRICE_SGD = 38;
+const PRICE_SGD = 47;
 const HITPAY_ENDPOINT = 'https://api.hit-pay.com/v1/payment-requests';
 const ALLOWED_COLOURS = new Set(['white', 'beige', 'grey', 'black']);
 

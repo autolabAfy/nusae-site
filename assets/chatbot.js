@@ -173,8 +173,8 @@
       id: "price",
       keywords: ["price", "how much", "cost", "how much is", "ophelia price",
                  "harga", "berapa harga"],
-      answer_en: "Ophelia is <strong>SGD $38</strong>. Free shipping for SG &amp; MY 🤍",
-      answer_ms: "Ophelia berharga <strong>SGD $38</strong>. Penghantaran percuma untuk SG &amp; MY 🤍"
+      answer_en: "Ophelia is <strong>SGD $47</strong>. Free shipping for SG &amp; MY 🤍",
+      answer_ms: "Ophelia berharga <strong>SGD $47</strong>. Penghantaran percuma untuk SG &amp; MY 🤍"
     },
     {
       id: "how_to_order",
