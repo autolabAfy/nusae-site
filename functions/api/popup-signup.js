@@ -34,36 +34,51 @@ async function handle({ request, env }) {
   // secrets are absent we still issue the code; we just skip the email sync.
   if (!env.DISCOUNT_CODES) return json({ error: 'Discount storage not configured' }, 500);
 
-  // Reuse an existing code if this email has signed up before — idempotent UX.
-  const existingCode = await env.DISCOUNT_CODES.get(`email:${email}`);
-  let code;
-  if (existingCode) {
-    code = existingCode;
-  } else {
-    code = await generateUniqueCode(env.DISCOUNT_CODES);
-    const issuedAt = new Date().toISOString();
-    await Promise.all([
-      env.DISCOUNT_CODES.put(`code:${code}`, JSON.stringify({
-        email,
-        issuedAt,
-        used: false,
-        percent: DISCOUNT_PCT
-      })),
-      env.DISCOUNT_CODES.put(`email:${email}`, code)
-    ]);
-  }
-
   // Push to Klaviyo if it's configured — never fail the signup if Klaviyo is
   // down or absent (the user still gets their code from KV either way).
-  if (env.KLAVIYO_API_KEY && env.KLAVIYO_LIST_ID) {
-    try {
-      await syncToKlaviyo(env, email, code);
-    } catch (err) {
-      console.log('Klaviyo sync failed:', String(err && err.message || err));
+  const syncIfConfigured = async (c) => {
+    if (env.KLAVIYO_API_KEY && env.KLAVIYO_LIST_ID) {
+      try {
+        await syncToKlaviyo(env, email, c);
+      } catch (err) {
+        console.log('Klaviyo sync failed:', String(err && err.message || err));
+      }
     }
+  };
+
+  // One discount per email. If this address already claimed a code, never mint
+  // a second one: hand back the same code if it's still unused, or refuse if
+  // it's already been redeemed.
+  const existingCode = await env.DISCOUNT_CODES.get(`email:${email}`);
+  if (existingCode) {
+    let rec = {};
+    try { rec = JSON.parse(await env.DISCOUNT_CODES.get(`code:${existingCode}`) || '{}'); } catch (_) {}
+    if (rec.used) {
+      return json({
+        status: 'used',
+        error: 'This email address has already used its one-time discount.'
+      }, 200);
+    }
+    await syncIfConfigured(existingCode); // keep them on the list; don't reissue
+    return json({ code: existingCode, percent: DISCOUNT_PCT, status: 'existing' });
   }
 
-  return json({ code, percent: DISCOUNT_PCT });
+  // Brand-new email — mint a fresh single-use code.
+  const code = await generateUniqueCode(env.DISCOUNT_CODES);
+  const issuedAt = new Date().toISOString();
+  await Promise.all([
+    env.DISCOUNT_CODES.put(`code:${code}`, JSON.stringify({
+      email,
+      issuedAt,
+      used: false,
+      percent: DISCOUNT_PCT
+    })),
+    env.DISCOUNT_CODES.put(`email:${email}`, code)
+  ]);
+
+  await syncIfConfigured(code);
+
+  return json({ code, percent: DISCOUNT_PCT, status: 'new' });
 }
 
 async function generateUniqueCode(kv) {

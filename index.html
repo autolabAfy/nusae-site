@@ -518,7 +518,12 @@ I'd like to order Ophelia.
     const PCT_KEY = "nusae_discount_pct";
 
     function getSavedCode() {
-      try { return localStorage.getItem("nusae_welcome_code") || ""; } catch (_) { return ""; }
+      try {
+        const c = (localStorage.getItem("nusae_welcome_code") || "").trim().toUpperCase();
+        // Only treat it as a real code if it matches the code format and isn't
+        // just punctuation (guards against a stale "—" showing as "applied").
+        return /^[A-Z0-9-]{3,24}$/.test(c) && /[A-Z0-9]/.test(c) ? c : "";
+      } catch (_) { return ""; }
     }
     function getSavedPct() {
       try { return parseInt(localStorage.getItem(PCT_KEY), 10) || DISCOUNT_PCT; } catch (_) { return DISCOUNT_PCT; }
@@ -777,6 +782,9 @@ I'd like to order Ophelia.
           body: JSON.stringify({ email })
         });
         const data = await res.json();
+        if (data && data.status === "used") {
+          throw new Error(data.error || "This email has already used its one-time discount.");
+        }
         if (!res.ok || !data.code) throw new Error(data.error || "Couldn't generate your code. Please try again.");
         showSuccess(data.code);
       } catch (err) {
