@@ -863,20 +863,34 @@ footer { padding: clamp(50px, 6vw, 90px) var(--pad) 28px; }
   font-size: 14px;
   letter-spacing: 0.5px;
   padding: 11px 16px;
-  border: 1px dashed var(--accent);
+  border: 1px solid var(--line);
   border-radius: var(--radius-sm);
-  background: var(--cream-deep);
+  background: #fff;
   color: var(--ink);
   outline: none;
   text-transform: uppercase;
   transition: border-color .15s ease, box-shadow .15s ease;
+  box-sizing: border-box;
 }
 .discount-entry input:focus {
   border-color: var(--accent);
   box-shadow: 0 0 0 3px rgba(201, 169, 119, 0.18);
 }
 .discount-entry input::placeholder { text-transform: none; letter-spacing: 0; color: var(--muted); }
-.discount-apply { white-space: nowrap; padding: 0 6px; }
+.discount-apply {
+  white-space: nowrap;
+  padding: 0 20px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: #fff;
+  color: var(--accent-deep);
+  font-family: var(--sans);
+  font-size: 13px;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  transition: border-color .15s ease, background .15s ease;
+}
+.discount-apply:hover { border-color: var(--accent); background: var(--cream-deep); text-decoration: none; }
 .discount-error {
   color: #8a2a1f;
   font-family: var(--sans);
@@ -890,7 +904,7 @@ footer { padding: clamp(50px, 6vw, 90px) var(--pad) 28px; }
   align-items: center;
   padding: 10px 14px;
   background: var(--cream-deep);
-  border: 1px dashed var(--accent);
+  border: 1px solid var(--line);
   border-radius: var(--radius-sm);
   margin: 4px 0 0;
 }
