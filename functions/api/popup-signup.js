@@ -144,8 +144,9 @@ async function syncToKlaviyo(env, email, code) {
               subscriptions: {
                 email: {
                   marketing: {
-                    consent: 'SUBSCRIBED',
-                    consented_at: new Date().toISOString()
+                    // No consented_at: Klaviyo rejects it for a live (non-historical)
+                    // opt-in. It records the consent timestamp as "now" automatically.
+                    consent: 'SUBSCRIBED'
                   }
                 }
               }
