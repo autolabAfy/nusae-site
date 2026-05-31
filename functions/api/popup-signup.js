@@ -46,6 +46,19 @@ async function handle({ request, env }) {
     }
   };
 
+  // Email the code directly via Resend (independent of any Klaviyo flow). This
+  // is what makes the popup's "we've sent it to your inbox" promise true. Also
+  // best-effort: a Resend outage must never block issuing the code.
+  const emailIfConfigured = async (c) => {
+    if (env.RESEND_API_KEY) {
+      try {
+        await sendWelcomeEmail(env, email, c);
+      } catch (err) {
+        console.log('Resend send failed:', String(err && err.message || err));
+      }
+    }
+  };
+
   // One discount per email. If this address already claimed a code, never mint
   // a second one: hand back the same code if it's still unused, or refuse if
   // it's already been redeemed.
@@ -59,7 +72,9 @@ async function handle({ request, env }) {
         error: 'This email address has already used its one-time discount.'
       }, 200);
     }
-    await syncIfConfigured(existingCode); // keep them on the list; don't reissue
+    // Keep them on the list; don't reissue. Re-send the email so a returning
+    // visitor who lost the code can still retrieve it.
+    await Promise.all([syncIfConfigured(existingCode), emailIfConfigured(existingCode)]);
     return json({ code: existingCode, percent: DISCOUNT_PCT, status: 'existing' });
   }
 
@@ -76,7 +91,7 @@ async function handle({ request, env }) {
     env.DISCOUNT_CODES.put(`email:${email}`, code)
   ]);
 
-  await syncIfConfigured(code);
+  await Promise.all([syncIfConfigured(code), emailIfConfigured(code)]);
 
   return json({ code, percent: DISCOUNT_PCT, status: 'new' });
 }
@@ -183,6 +198,85 @@ async function syncToKlaviyo(env, email, code) {
     const txt = await subRes.text().catch(() => '');
     throw new Error(`Klaviyo subscribe failed: ${subRes.status} ${txt.slice(0, 200)}`);
   }
+}
+
+// ---- Resend: deliver the discount code to the customer's inbox ----
+// Requires the RESEND_API_KEY secret. RESEND_FROM sets the sender (must be on a
+// domain verified in Resend); RESEND_REPLY_TO is optional. SITE_URL overrides
+// the shop link in the email.
+async function sendWelcomeEmail(env, email, code) {
+  const from = env.RESEND_FROM || 'NUSAÉ <hello@shopnusae.com>';
+  const shopUrl = env.SITE_URL || 'https://shopnusae.com';
+  const subject = `Here's your ${DISCOUNT_PCT}% off Ophelia ✿`;
+
+  const body = {
+    from,
+    to: [email],
+    subject,
+    html: welcomeEmailHtml(code, shopUrl),
+    text: welcomeEmailText(code, shopUrl)
+  };
+  if (env.RESEND_REPLY_TO) body.reply_to = env.RESEND_REPLY_TO;
+
+  const res = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${env.RESEND_API_KEY}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(body)
+  });
+  if (!res.ok) {
+    const txt = await res.text().catch(() => '');
+    throw new Error(`Resend send failed: ${res.status} ${txt.slice(0, 200)}`);
+  }
+}
+
+function welcomeEmailText(code, shopUrl) {
+  return [
+    'Welcome to NUSAÉ ✿',
+    '',
+    `Here's your one-time code for ${DISCOUNT_PCT}% off the Ophelia Lace Outerwear:`,
+    '',
+    `    ${code}`,
+    '',
+    "It'll auto-apply at checkout — or enter it by hand. One use per customer.",
+    '',
+    `Shop Ophelia: ${shopUrl}`,
+    '',
+    'NUSAÉ — effortless modest pieces, made simple.'
+  ].join('\n');
+}
+
+function welcomeEmailHtml(code, shopUrl) {
+  return `<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#EDE3D2;font-family:Georgia,'Times New Roman',serif;color:#1F1A14;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#EDE3D2;padding:32px 16px;">
+    <tr><td align="center">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:480px;background:#F5EFE6;border-radius:20px;overflow:hidden;">
+        <tr><td style="padding:36px 36px 8px;text-align:center;">
+          <div style="font-size:13px;letter-spacing:6px;color:#8C7A5B;text-transform:uppercase;">NUSAÉ</div>
+          <div style="font-size:26px;color:#C9A977;margin-top:18px;">✿</div>
+          <h1 style="font-size:28px;font-weight:500;margin:8px 0 6px;line-height:1.2;">Here's your ${DISCOUNT_PCT}% off Ophelia</h1>
+          <p style="font-size:15px;color:#4A3F30;font-style:italic;margin:0 0 8px;">A one-time code, yours to use whenever you're ready.</p>
+        </td></tr>
+        <tr><td style="padding:12px 36px;text-align:center;">
+          <div style="border:1px dashed #C9A977;border-radius:14px;padding:18px 12px;font-family:Arial,Helvetica,sans-serif;font-size:24px;letter-spacing:3px;font-weight:bold;color:#1F1A14;background:#FFFDF9;">${code}</div>
+          <p style="font-size:13px;color:#8C7A5B;margin:14px 0 0;font-family:Arial,Helvetica,sans-serif;">It auto-applies at checkout — or enter it by hand. One use per customer.</p>
+        </td></tr>
+        <tr><td style="padding:22px 36px 8px;text-align:center;">
+          <a href="${shopUrl}" style="display:inline-block;background:#1F1A14;color:#F5EFE6;text-decoration:none;font-family:Arial,Helvetica,sans-serif;font-size:13px;letter-spacing:2px;text-transform:uppercase;padding:15px 34px;border-radius:999px;">Shop Ophelia</a>
+        </td></tr>
+        <tr><td style="padding:24px 36px 34px;text-align:center;">
+          <p style="font-size:12px;color:#8C7A5B;font-family:Arial,Helvetica,sans-serif;line-height:1.5;margin:0;">NUSAÉ — effortless modest pieces, made simple.<br>You're receiving this because you requested a discount code at ${shopUrl}.</p>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`;
 }
 
 function json(obj, status = 200) {
