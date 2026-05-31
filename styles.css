@@ -93,7 +93,7 @@ h5 { font-family: var(--sans); font-size: 12px; letter-spacing: 2px; text-transf
 .nav nav a { font-size: 13px; letter-spacing: 1px; color: var(--ink-soft); }
 .nav nav a:hover { color: var(--accent-deep); }
 
-/* Hamburger + mobile sticky order bar — hidden on desktop, shown ≤880px */
+/* Hamburger (mobile only) + sticky Order & Pay Now bar (all screen sizes) */
 .nav-toggle {
   display: none;
   flex-direction: column;
@@ -120,7 +120,7 @@ h5 { font-family: var(--sans); font-size: 12px; letter-spacing: 2px; text-transf
 .nav-toggle[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
 .mobile-order-bar {
-  display: none;
+  display: block;            /* sticky Order & Pay Now bar — visible on every screen size */
   position: fixed;
   bottom: 0; left: 0; right: 0;
   z-index: 900;
@@ -129,7 +129,9 @@ h5 { font-family: var(--sans); font-size: 12px; letter-spacing: 2px; text-transf
   border-top: 1px solid var(--line);
   box-shadow: 0 -6px 18px rgba(31, 26, 20, 0.08);
 }
-.mobile-order-bar .btn { width: 100%; text-align: center; }
+.mobile-order-bar .btn { width: 100%; max-width: 520px; margin: 0 auto; text-align: center; }
+/* Reserve space so the fixed bar never sits over the footer (all sizes) */
+body { padding-bottom: 84px; }
 
 /* ============ Buttons ============ */
 .btn {
@@ -634,10 +636,7 @@ footer { padding: clamp(50px, 6vw, 90px) var(--pad) 28px; }
   .nav nav a { font-size: 15px; padding: 13px 0; border-bottom: 1px solid var(--line); }
   .nav nav a:last-child { border-bottom: 0; }
   .nav-toggle { display: flex; }
-  .nav-order { display: none; }          /* primary CTA lives in the sticky bottom bar on mobile */
-  .mobile-order-bar { display: block; }
-  body { padding-bottom: 72px; }          /* room so the fixed bar never covers the footer */
-  .nusae-chat-bubble { bottom: 84px; }    /* lift the chat button above the order bar */
+  .nav-order { display: none; }          /* header CTA hidden on mobile; sticky bottom bar covers it */
 
   .hero, .product, .founder-inner { grid-template-columns: 1fr; }
   .hero-art:after { display: none; }
@@ -1139,7 +1138,7 @@ footer { padding: clamp(50px, 6vw, 90px) var(--pad) 28px; }
 /* ==================== NUSAÉ Assistant chatbot ==================== */
 .nusae-chat-bubble {
   position: fixed;
-  bottom: 22px;
+  bottom: 84px;              /* lifted clear of the sticky Order & Pay Now bar */
   right: 22px;
   width: 58px;
   height: 58px;
@@ -1170,12 +1169,12 @@ footer { padding: clamp(50px, 6vw, 90px) var(--pad) 28px; }
 
 .nusae-chat-panel {
   position: fixed;
-  bottom: 22px;
+  bottom: 84px;              /* sits above the sticky order bar, in line with the bubble */
   right: 22px;
   width: 360px;
   max-width: calc(100vw - 28px);
   height: 540px;
-  max-height: calc(100vh - 44px);
+  max-height: calc(100vh - 104px);
   background: #FFFCF7;
   border: 1px solid rgba(31, 26, 20, 0.08);
   border-radius: 14px;
@@ -1358,7 +1357,7 @@ footer { padding: clamp(50px, 6vw, 90px) var(--pad) 28px; }
 .nusae-chat-wa:hover { background: #1FB755; }
 
 @media (max-width: 540px) {
-  .nusae-chat-bubble { bottom: 18px; right: 18px; width: 54px; height: 54px; }
+  .nusae-chat-bubble { bottom: 84px; right: 18px; width: 54px; height: 54px; }
   .nusae-chat-panel {
     bottom: 0;
     right: 0;

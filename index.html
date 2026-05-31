@@ -12,27 +12,19 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=16" />
+<link rel="stylesheet" href="styles.css?v=17" />
 <script>
   // -------- ONE-LINE CONFIG --------
   // Replace WA_NUMBER with your WhatsApp number in international format (no +, no spaces).
   // Example: Singapore +65 9123 4567 -> "6591234567"
   const WA_NUMBER = "6597229061";
   const WA_BASE = (msg) => `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`;
-  const ORDER_TEMPLATE = `Hi NUSAÉ
-I'd like to order Ophelia.
-
-1.⁠ ⁠Name :
-2.⁠ ⁠⁠Contact :
-3.⁠ ⁠⁠Address :
-4.⁠ ⁠⁠Choice of colour :
-5.⁠ ⁠Quantity :
-6.⁠ ⁠⁠Mode of payment : PayNow / Card`;
   // ----------------------------------
   document.addEventListener("DOMContentLoaded", () => {
+    // Order links were removed — all orders go through the Order & Pay Now
+    // checkout. This only wires remaining WhatsApp *support* links (FAQ etc.).
     document.querySelectorAll("[data-wa]").forEach(a => {
-      const msg = a.dataset.waTemplate === "order" ? ORDER_TEMPLATE : a.dataset.wa;
-      a.href = WA_BASE(msg);
+      a.href = WA_BASE(a.dataset.wa);
       a.target = "_blank";
       a.rel = "noopener";
     });
@@ -136,7 +128,6 @@ I'd like to order Ophelia.
 
       <div class="cta-row cta-row-center cta-row-stack">
         <a class="btn btn-primary" href="#order" data-open-checkout>Order &amp; Pay Now</a>
-        <a class="btn btn-ghost" data-wa="" data-wa-template="order">Order via WhatsApp</a>
       </div>
       <p class="pay-methods">Pay with PayNow &amp; Card · Secure checkout by HitPay</p>
     </div>
@@ -304,7 +295,6 @@ I'd like to order Ophelia.
   </ol>
   <div class="how-cta">
     <a class="btn btn-primary btn-lg" href="#order" data-open-checkout>Order &amp; Pay Now</a>
-    <a class="btn btn-ghost" data-wa="" data-wa-template="order">Order via WhatsApp</a>
     <p class="pay-methods">Pay with PayNow &amp; Card · Secure checkout by HitPay</p>
   </div>
 </section>
@@ -318,8 +308,7 @@ I'd like to order Ophelia.
   <div class="sizing-note">
     <p class="sizing-lede">Ophelia is <em>free size</em> — designed to fall softly across most body shapes.</p>
     <p class="sizing-body">The cut is relaxed by design. It layers gently over a tank, a slip dress, or whatever you're already wearing — without pulling, tugging, or fussing. No measurements to memorise, no sizes to second-guess.</p>
-    <p class="sizing-body">If you're ever unsure, message us — we'll talk you through how it sits.</p>
-    <a class="btn btn-secondary" data-wa="Hi NUSAÉ 🤍 Just checking — will Ophelia fit me well?">Ask about fit</a>
+    <p class="sizing-body">If you're ever unsure, just ask our assistant — we'll talk you through how it sits.</p>
   </div>
 </section>
 
@@ -396,7 +385,6 @@ I'd like to order Ophelia.
   <div class="closer-inner">
     <p class="eyebrow">— Ready when you are —</p>
     <h2>Your everyday layering piece, made simple.</h2>
-    <a class="btn btn-primary btn-lg" data-wa="" data-wa-template="order">Start your order</a>
   </div>
 </section>
 
@@ -417,7 +405,6 @@ I'd like to order Ophelia.
       <h5>Connect</h5>
       <a href="https://instagram.com/shopnusae" target="_blank" rel="noopener">Instagram</a>
       <a href="https://threads.com/@shopnusae" target="_blank" rel="noopener">Threads</a>
-      <a data-wa="" data-wa-template="order">WhatsApp</a>
     </div>
     <div>
       <h5>Promise</h5>
@@ -927,6 +914,6 @@ I'd like to order Ophelia.
   })();
 </script>
 
-<script src="assets/chatbot.js?v=2" defer></script>
+<script src="assets/chatbot.js?v=3" defer></script>
 </body>
 </html>

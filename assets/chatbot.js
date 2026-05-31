@@ -103,8 +103,8 @@
       id: "restock",
       keywords: ["restock", "sold out", "out of stock", "back in stock", "waitlist", "available again", "pre-order", "preorder",
                  "habis stok", "ada lagi", "bila ada"],
-      answer_en: "Yes — we restock! 🤍 Just <a href=\"" + WA_LINK("Hi NUSAÉ, I'd like to pre-order Ophelia 🤍") + "\" target=\"_blank\" rel=\"noopener\">message us on WhatsApp</a> to pre-order and we'll let you know when it arrives.",
-      answer_ms: "Ya — kami akan restock! 🤍 <a href=\"" + WA_LINK("Hi NUSAÉ, saya nak pre-order Ophelia 🤍") + "\" target=\"_blank\" rel=\"noopener\">WhatsApp kami</a> untuk pre-order."
+      answer_en: "Yes — Ophelia is open for pre-order right now 🤍 Just tap the <strong>Order &amp; Pay Now</strong> button on the page to reserve yours. Pieces are made to order, so processing is 5–10 days.",
+      answer_ms: "Ya — Ophelia boleh pre-order sekarang 🤍 Tekan butang <strong>Order &amp; Pay Now</strong> di laman ini untuk tempah. Pieces dibuat atas tempahan, jadi processing 5–10 hari."
     },
     {
       id: "layering",
@@ -159,8 +159,8 @@
       id: "wholesale",
       keywords: ["bulk", "wholesale", "bulk order", "large order", "many pieces", "reseller",
                  "borong", "pukal"],
-      answer_en: "Bulk and wholesale orders welcome — <strong>minimum 10 pieces</strong>. Just <a href=\"" + WA_LINK("Hi NUSAÉ, I'd like to discuss a bulk order 🤍") + "\" target=\"_blank\" rel=\"noopener\">message us on WhatsApp</a> to discuss.",
-      answer_ms: "Order pukal dialu-alukan — <strong>minimum 10 pieces</strong>. <a href=\"" + WA_LINK("Hi NUSAÉ, saya nak bincang bulk order 🤍") + "\" target=\"_blank\" rel=\"noopener\">WhatsApp kami</a> untuk berbincang."
+      answer_en: "Ordering a few? You can set the quantity right in the <strong>Order &amp; Pay Now</strong> checkout 🤍 For larger wholesale orders (10+ pieces) we'll sort pricing with you personally — <a href=\"" + WA_LINK("Hi NUSAÉ, I'd like to discuss a wholesale order 🤍") + "\" target=\"_blank\" rel=\"noopener\">message us on WhatsApp</a>.",
+      answer_ms: "Nak beberapa? Anda boleh tetapkan kuantiti terus di checkout <strong>Order &amp; Pay Now</strong> 🤍 Untuk order wholesale yang besar (10+ pieces), kami uruskan harga secara peribadi — <a href=\"" + WA_LINK("Hi NUSAÉ, saya nak bincang order wholesale 🤍") + "\" target=\"_blank\" rel=\"noopener\">WhatsApp kami</a>."
     },
     {
       id: "giftwrap",
@@ -180,8 +180,8 @@
       id: "how_to_order",
       keywords: ["how to order", "how do i order", "place order", "buy", "checkout", "purchase",
                  "cara order", "cara beli"],
-      answer_en: "Two ways 🤍<br>1. Use the <strong>Order now</strong> button on the page (secure HitPay checkout — card or PayNow)<br>2. Or <a href=\"" + WA_LINK() + "\" target=\"_blank\" rel=\"noopener\">message us on WhatsApp</a> and we'll handle it for you.",
-      answer_ms: "Dua cara 🤍<br>1. Guna butang <strong>Order now</strong> di laman ini (HitPay checkout)<br>2. Atau <a href=\"" + WA_LINK() + "\" target=\"_blank\" rel=\"noopener\">WhatsApp kami</a> dan kami uruskan."
+      answer_en: "Easy 🤍 Just tap the <strong>Order &amp; Pay Now</strong> button on the page — it's a secure HitPay checkout (card or PayNow) and takes about a minute.",
+      answer_ms: "Mudah 🤍 Tekan butang <strong>Order &amp; Pay Now</strong> di laman ini — checkout HitPay yang selamat (kad atau PayNow), ambil masa seminit sahaja."
     },
     {
       id: "contact",
