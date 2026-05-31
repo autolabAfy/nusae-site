@@ -855,6 +855,34 @@ footer { padding: clamp(50px, 6vw, 90px) var(--pad) 28px; }
 }
 
 /* ============ Discount row in checkout ============ */
+.discount-block { margin: 4px 0 0; }
+.discount-entry { display: flex; gap: 8px; align-items: stretch; }
+.discount-entry input {
+  flex: 1;
+  font-family: var(--sans);
+  font-size: 14px;
+  letter-spacing: 0.5px;
+  padding: 11px 16px;
+  border: 1px dashed var(--accent);
+  border-radius: var(--radius-sm);
+  background: var(--cream-deep);
+  color: var(--ink);
+  outline: none;
+  text-transform: uppercase;
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+.discount-entry input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(201, 169, 119, 0.18);
+}
+.discount-entry input::placeholder { text-transform: none; letter-spacing: 0; color: var(--muted); }
+.discount-apply { white-space: nowrap; padding: 0 6px; }
+.discount-error {
+  color: #8a2a1f;
+  font-family: var(--sans);
+  font-size: 12px;
+  margin: 6px 2px 0;
+}
 .discount-row {
   display: grid;
   grid-template-columns: auto 1fr auto;

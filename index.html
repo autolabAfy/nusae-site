@@ -186,10 +186,17 @@ I'd like to order Ophelia.
         <button type="button" class="btn-link" id="addItemBtn">+ Add another colour</button>
       </fieldset>
 
-      <div class="discount-row" id="discountRow" hidden>
-        <span class="discount-label">Discount code</span>
-        <span class="discount-code" id="discountCodeChip">—</span>
-        <button type="button" class="discount-remove" id="discountRemove" aria-label="Remove discount">×</button>
+      <div class="discount-block">
+        <div class="discount-entry" id="discountEntry">
+          <input type="text" id="discountInput" maxlength="24" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="Discount code" />
+          <button type="button" class="btn-link discount-apply" id="discountApply">Apply</button>
+        </div>
+        <div class="discount-row" id="discountRow" hidden>
+          <span class="discount-label">Discount applied</span>
+          <span class="discount-code" id="discountCodeChip">—</span>
+          <button type="button" class="discount-remove" id="discountRemove" aria-label="Remove discount">×</button>
+        </div>
+        <p class="discount-error" id="discountError" hidden></p>
       </div>
 
       <div class="totals-summary" id="totalsSummary" hidden>
@@ -500,26 +507,74 @@ I'd like to order Ophelia.
       });
     }
 
+    const discountEntry = document.getElementById("discountEntry");
+    const discountInput = document.getElementById("discountInput");
+    const discountApply = document.getElementById("discountApply");
     const discountRow = document.getElementById("discountRow");
     const discountChip = document.getElementById("discountCodeChip");
     const discountRemove = document.getElementById("discountRemove");
+    const discountError = document.getElementById("discountError");
     const DISCOUNT_PCT = 15;
+    const PCT_KEY = "nusae_discount_pct";
 
     function getSavedCode() {
       try { return localStorage.getItem("nusae_welcome_code") || ""; } catch (_) { return ""; }
     }
-    function clearSavedCode() {
-      try { localStorage.removeItem("nusae_welcome_code"); } catch (_) {}
+    function getSavedPct() {
+      try { return parseInt(localStorage.getItem(PCT_KEY), 10) || DISCOUNT_PCT; } catch (_) { return DISCOUNT_PCT; }
     }
+    function saveDiscount(code, pct) {
+      try {
+        localStorage.setItem("nusae_welcome_code", code);
+        localStorage.setItem(PCT_KEY, String(pct || DISCOUNT_PCT));
+      } catch (_) {}
+    }
+    function clearSavedCode() {
+      try { localStorage.removeItem("nusae_welcome_code"); localStorage.removeItem(PCT_KEY); } catch (_) {}
+    }
+    // Show the entry field when no code is applied, the applied chip when one is.
     function syncDiscountRow() {
       const code = getSavedCode();
       if (code) {
         discountChip.textContent = code;
         discountRow.hidden = false;
+        discountEntry.hidden = true;
       } else {
         discountRow.hidden = true;
+        discountEntry.hidden = false;
+      }
+      if (discountError) discountError.hidden = true;
+    }
+    async function applyTypedCode() {
+      const code = (discountInput.value || "").trim().toUpperCase();
+      if (!code) return;
+      discountError.hidden = true;
+      discountApply.disabled = true;
+      discountApply.textContent = "…";
+      try {
+        const res = await fetch("/api/validate-discount", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ code })
+        });
+        const data = await res.json();
+        if (!res.ok || !data.valid) throw new Error(data.error || "Discount code not recognised");
+        saveDiscount(data.code, data.percent);
+        discountInput.value = "";
+        syncDiscountRow();
+        updateTotals();
+      } catch (err) {
+        discountError.textContent = err.message || "Couldn't apply that code.";
+        discountError.hidden = false;
+      } finally {
+        discountApply.disabled = false;
+        discountApply.textContent = "Apply";
       }
     }
+    discountApply?.addEventListener("click", applyTypedCode);
+    discountInput?.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") { e.preventDefault(); applyTypedCode(); }
+    });
     discountRemove?.addEventListener("click", () => {
       clearSavedCode();
       syncDiscountRow();
@@ -533,7 +588,7 @@ I'd like to order Ophelia.
       });
       const subtotal = qty * PRICE;
       const code = getSavedCode();
-      const grandTotal = code ? +(subtotal * (1 - DISCOUNT_PCT / 100)).toFixed(2) : subtotal;
+      const grandTotal = code ? +(subtotal * (1 - getSavedPct() / 100)).toFixed(2) : subtotal;
 
       const country = countrySelect ? countrySelect.value : "SG";
 
