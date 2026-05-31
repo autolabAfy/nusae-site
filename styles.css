@@ -93,6 +93,44 @@ h5 { font-family: var(--sans); font-size: 12px; letter-spacing: 2px; text-transf
 .nav nav a { font-size: 13px; letter-spacing: 1px; color: var(--ink-soft); }
 .nav nav a:hover { color: var(--accent-deep); }
 
+/* Hamburger + mobile sticky order bar — hidden on desktop, shown ≤880px */
+.nav-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 44px;
+  height: 40px;
+  padding: 0 10px;
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  cursor: pointer;
+}
+.nav-toggle span {
+  display: block;
+  height: 2px;
+  width: 100%;
+  background: var(--ink);
+  border-radius: 2px;
+  transition: transform .2s ease, opacity .2s ease;
+}
+.nav-toggle[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-toggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+.nav-toggle[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+.mobile-order-bar {
+  display: none;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 900;
+  padding: 10px var(--pad);
+  background: var(--cream);
+  border-top: 1px solid var(--line);
+  box-shadow: 0 -6px 18px rgba(31, 26, 20, 0.08);
+}
+.mobile-order-bar .btn { width: 100%; text-align: center; }
+
 /* ============ Buttons ============ */
 .btn {
   display: inline-block;
@@ -578,7 +616,29 @@ footer { padding: clamp(50px, 6vw, 90px) var(--pad) 28px; }
 
 /* ============ Mobile ============ */
 @media (max-width: 880px) {
-  .nav nav { display: none; }
+  /* Nav links become a dropdown panel toggled by the hamburger */
+  .nav nav {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    gap: 0;
+    background: var(--cream);
+    border-bottom: 1px solid var(--line);
+    padding: 4px var(--pad) 14px;
+    box-shadow: 0 14px 26px rgba(31, 26, 20, 0.07);
+  }
+  .nav nav.nav-open { display: flex; }
+  .nav nav a { font-size: 15px; padding: 13px 0; border-bottom: 1px solid var(--line); }
+  .nav nav a:last-child { border-bottom: 0; }
+  .nav-toggle { display: flex; }
+  .nav-order { display: none; }          /* primary CTA lives in the sticky bottom bar on mobile */
+  .mobile-order-bar { display: block; }
+  body { padding-bottom: 72px; }          /* room so the fixed bar never covers the footer */
+  .nusae-chat-bubble { bottom: 84px; }    /* lift the chat button above the order bar */
+
   .hero, .product, .founder-inner { grid-template-columns: 1fr; }
   .hero-art:after { display: none; }
   .steps { grid-template-columns: 1fr 1fr; }
@@ -622,6 +682,10 @@ footer { padding: clamp(50px, 6vw, 90px) var(--pad) 28px; }
   padding: 20px;
   overflow-y: auto;
 }
+/* The native `hidden` attribute must always win, even over flex/grid display
+   rules — without this, JS that toggles `hidden` on the discount chip / totals
+   summary is silently ignored (caused the stuck "applied" badge + blank shipping). */
+[hidden] { display: none !important; }
 .checkout-overlay[hidden] { display: none; }
 .checkout-card {
   background: var(--cream);
@@ -948,7 +1012,9 @@ footer { padding: clamp(50px, 6vw, 90px) var(--pad) 28px; }
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1100;
+  /* Above the floating chat bubble (9998) / panel (9999) so they never
+     collide on mobile — see QA B3/B7. */
+  z-index: 10000;
   padding: 20px;
   overflow-y: auto;
   animation: popup-fade-in 0.25s ease-out;

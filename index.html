@@ -4,15 +4,15 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>NUSAÉ — Effortless modest pieces, made simple</title>
-<meta name="description" content="NUSAÉ — comfortable, modest, timeless pieces for everyday wear. Handpicked. Breathable. Worldwide shipping." />
+<meta name="description" content="NUSAÉ — comfortable, modest, timeless pieces for everyday wear. Handpicked. Breathable. Free shipping across Singapore & Malaysia." />
 <meta property="og:title" content="NUSAÉ — Effortless modest pieces" />
-<meta property="og:description" content="Comfortable, modest, timeless. Worldwide shipping. Order in 2 minutes via WhatsApp." />
+<meta property="og:description" content="Comfortable, modest, timeless. Free shipping across Singapore & Malaysia." />
 <meta property="og:image" content="assets/ophelia-meet.jpg" />
 <link rel="icon" type="image/png" href="assets/logo.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=15" />
+<link rel="stylesheet" href="styles.css?v=16" />
 <script>
   // -------- ONE-LINE CONFIG --------
   // Replace WA_NUMBER with your WhatsApp number in international format (no +, no spaces).
@@ -42,19 +42,27 @@ I'd like to order Ophelia.
 <body>
 
 <!-- ANNOUNCEMENT BAR -->
-<div class="announce">✿ Breathable, lightweight, effortless pieces · 🌍 Worldwide shipping</div>
+<div class="announce">✿ Breathable, lightweight, effortless pieces · Free shipping across Singapore &amp; Malaysia</div>
 
 <!-- NAV -->
 <header class="nav">
   <a href="#top" class="brand"><img src="assets/logo.png?v=2" alt="NUSAÉ" width="98" height="54" /></a>
-  <nav>
+  <nav id="navMenu">
     <a href="#shop">Shop</a>
     <a href="#how">How to order</a>
     <a href="#sizing">Sizing</a>
     <a href="#faq">FAQ</a>
   </nav>
-  <a class="btn btn-ghost" href="#order" data-open-checkout>Order &amp; Pay Now</a>
+  <a class="btn btn-ghost nav-order" href="#order" data-open-checkout>Order &amp; Pay Now</a>
+  <button type="button" class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="navMenu">
+    <span></span><span></span><span></span>
+  </button>
 </header>
+
+<!-- MOBILE STICKY ORDER BAR -->
+<div class="mobile-order-bar">
+  <a class="btn btn-primary" href="#order" data-open-checkout>Order &amp; Pay Now — SGD $47</a>
+</div>
 
 <!-- HERO -->
 <section class="hero" id="top">
@@ -355,8 +363,8 @@ I'd like to order Ophelia.
       <p>Message us within 3 days of delivery and we'll work it out with you personally. Because every piece is made to order, we handle each case ourselves rather than running it through a returns portal. We've never left someone unhappy and we don't plan to start.</p>
     </details>
     <details>
-      <summary>Do you ship worldwide? What about customs?</summary>
-      <p>Yes — anywhere with a postal service. International shipping is calculated live at checkout, so there are no surprise fees from us. Customs duties (if any) are set by your country's import rules and are the buyer's responsibility. We'll always declare honestly on the parcel.</p>
+      <summary>Where do you ship? Is shipping really free?</summary>
+      <p>We ship across <strong>Singapore and Malaysia, and shipping is free</strong> — the price you see is the price you pay, with no surprise fees at checkout. Based somewhere else? Message us on <a href="#" data-wa="Hi NUSAÉ, I'm ordering from outside Singapore/Malaysia — could you help me with shipping?">WhatsApp</a> or via TikTok and we'll arrange it for you personally.</p>
     </details>
     <details>
       <summary>Will Ophelia restock? Are other pieces coming?</summary>
@@ -413,12 +421,31 @@ I'd like to order Ophelia.
     </div>
     <div>
       <h5>Promise</h5>
-      <p class="foot-tag">Handpicked. Breathable. Worldwide shipping. We reply daily.</p>
+      <p class="foot-tag">Handpicked. Breathable. Free shipping across SG &amp; MY. We reply daily.</p>
     </div>
   </div>
   <p class="copy">© <span id="yr"></span> NUSAÉ. All pieces handpicked with care.</p>
 </footer>
 <script>document.getElementById("yr").textContent = new Date().getFullYear();</script>
+
+<!-- Mobile nav toggle -->
+<script>
+  (function () {
+    const toggle = document.getElementById("navToggle");
+    const menu = document.getElementById("navMenu");
+    if (!toggle || !menu) return;
+    function setOpen(open) {
+      menu.classList.toggle("nav-open", open);
+      toggle.setAttribute("aria-expanded", open ? "true" : "false");
+      toggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+    }
+    toggle.addEventListener("click", () => setOpen(!menu.classList.contains("nav-open")));
+    // Close after picking a link.
+    menu.querySelectorAll("a").forEach(a => a.addEventListener("click", () => setOpen(false)));
+    // Close on Escape.
+    document.addEventListener("keydown", e => { if (e.key === "Escape") setOpen(false); });
+  })();
+</script>
 
 <script>
   // Hero image cross-fade
@@ -602,14 +629,13 @@ I'd like to order Ophelia.
         ? `<span class="totals-strike">SGD $${subtotal}</span> SGD $${grandTotal.toFixed(2)}`
         : `SGD $${grandTotal % 1 === 0 ? grandTotal : grandTotal.toFixed(2)}`;
 
+      // Show "Free" shipping to every buyer; add an RM estimate for Malaysia.
+      totalsSummary.hidden = false;
+      shipAmountEl.textContent = "Free";
       if (country === "MY") {
-        // Reassure with free shipping + an RM price estimate
-        totalsSummary.hidden = false;
-        shipAmountEl.textContent = "Free";
         totalRmEl.textContent = `≈ RM ${Math.round(grandTotal * MYR_PER_SGD)}`;
         totalRmEl.hidden = false;
       } else {
-        totalsSummary.hidden = true;
         totalRmEl.hidden = true;
       }
     }
@@ -683,6 +709,17 @@ I'd like to order Ophelia.
         discountCode: getSavedCode() || undefined
       };
 
+      // Basic phone sanity check (digits only, incl. country code).
+      const phoneDigits = payload.contact.replace(/\D/g, "");
+      if (phoneDigits.length < 8 || phoneDigits.length > 15) {
+        errorEl.textContent = "Please enter a valid phone number (including area code).";
+        errorEl.hidden = false;
+        submitBtn.disabled = false;
+        submitBtn.querySelector(".checkout-submit-label").hidden = false;
+        submitBtn.querySelector(".checkout-submit-loading").hidden = true;
+        return;
+      }
+
       try {
         const res = await fetch("/api/checkout", {
           method: "POST",
@@ -719,27 +756,41 @@ I'd like to order Ophelia.
     const copyBtn = document.getElementById("popupCopy");
     const shopBtn = document.getElementById("popupShopNow");
 
-    const DISMISS_KEY = "nusae_popup_dismissed_at";
+    // Popup-frequency state is kept SEPARATE from discount-code state (spec §4 / B6).
+    //   SHOWN_KEY (sessionStorage) → "popup already shown this session".
+    //   CODE_KEY  (localStorage)   → only READ, to avoid re-prompting someone who
+    //                                already holds a code. Never used to gate frequency.
+    const SHOWN_KEY = "nusae_popup_shown";
     const CODE_KEY = "nusae_welcome_code";
-    const SUPPRESS_DAYS = 30;
-    const MS_PER_DAY = 86400000;
+    let lastFocused = null;
 
+    function checkoutOpen() {
+      const checkout = document.getElementById("checkoutOverlay");
+      return !!(checkout && !checkout.hidden);
+    }
+    function alreadyShown() {
+      try { return sessionStorage.getItem(SHOWN_KEY) === "1"; } catch (_) { return false; }
+    }
+    function hasCode() {
+      try { return !!localStorage.getItem(CODE_KEY); } catch (_) { return false; }
+    }
     function shouldShow() {
-      try {
-        if (localStorage.getItem(CODE_KEY)) return false;
-        const last = parseInt(localStorage.getItem(DISMISS_KEY) || "0", 10);
-        if (last && (Date.now() - last) < SUPPRESS_DAYS * MS_PER_DAY) return false;
-      } catch (_) {}
+      if (checkoutOpen()) return false;   // §3.2 — never over the order modal (B4)
+      if (alreadyShown()) return false;   // §3.1 — at most once per session
+      if (hasCode()) return false;        // §3.3 — already subscribed / holds a code
       return true;
     }
-    function markDismissed() {
-      try { localStorage.setItem(DISMISS_KEY, String(Date.now())); } catch (_) {}
+    function markShown() {
+      try { sessionStorage.setItem(SHOWN_KEY, "1"); } catch (_) {}
     }
     function saveCode(code) {
       try { localStorage.setItem(CODE_KEY, code); } catch (_) {}
     }
 
     function open() {
+      if (!overlay.hidden) return;
+      markShown(); // counts as shown the moment it appears — whether dismissed OR subscribed
+      lastFocused = document.activeElement;
       overlay.hidden = false;
       document.body.style.overflow = "hidden";
       setTimeout(() => form.querySelector("input")?.focus(), 80);
@@ -747,7 +798,9 @@ I'd like to order Ophelia.
     function close() {
       overlay.hidden = true;
       document.body.style.overflow = "";
-      markDismissed();
+      if (lastFocused && typeof lastFocused.focus === "function") {
+        try { lastFocused.focus(); } catch (_) {}
+      }
     }
 
     function showSuccess(code) {
@@ -765,16 +818,38 @@ I'd like to order Ophelia.
     closeBtn.addEventListener("click", close);
     declineBtn.addEventListener("click", close);
     overlay.addEventListener("click", e => { if (e.target === overlay) close(); });
-    document.addEventListener("keydown", e => { if (e.key === "Escape" && !overlay.hidden) close(); });
+    document.addEventListener("keydown", (e) => {
+      if (overlay.hidden) return;
+      if (e.key === "Escape") { close(); return; }
+      if (e.key !== "Tab") return;
+      // Focus trap — keep Tab cycling within the popup only (spec §4; no leak to B4 stack).
+      const focusables = Array.from(overlay.querySelectorAll(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      )).filter(el => !el.hidden && !el.disabled && el.offsetParent !== null);
+      if (!focusables.length) return;
+      const first = focusables[0], last = focusables[focusables.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    });
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
       errorEl.hidden = true;
+
+      // Block invalid emails client-side (form is novalidate so we check manually).
+      const email = (new FormData(form).get("email") || "").toString().trim();
+      const emailInput = form.querySelector('input[name="email"]');
+      if (!email || (emailInput && !emailInput.checkValidity())) {
+        errorEl.textContent = "Please enter a valid email address.";
+        errorEl.hidden = false;
+        emailInput?.focus();
+        return;
+      }
+
       submitBtn.disabled = true;
       submitBtn.querySelector(".popup-submit-label").hidden = true;
       submitBtn.querySelector(".popup-submit-loading").hidden = false;
 
-      const email = (new FormData(form).get("email") || "").toString().trim();
       try {
         const res = await fetch("/api/popup-signup", {
           method: "POST",
@@ -809,24 +884,46 @@ I'd like to order Ophelia.
       document.querySelector("[data-open-checkout]")?.click();
     });
 
-    // Trigger logic: 8s delay on touch/small screens, exit-intent on desktop.
+    // ---- Triggers (spec §2) ----
+    //   Primary : fire once the visitor scrolls past ~50% of the page (warm intent).
+    //   Backup  : desktop exit-intent (mouse to top chrome). Mobile relies on scroll.
+    //   Disabled: checkout — shouldShow() blocks while the order modal is open (B4).
     if (!shouldShow()) return;
-    const isTouch = window.matchMedia("(hover: none)").matches || window.innerWidth < 768;
-    if (isTouch) {
-      setTimeout(() => { if (shouldShow()) open(); }, 8000);
-    } else {
-      let armed = false;
-      setTimeout(() => { armed = true; }, 3000);
-      document.addEventListener("mouseout", (e) => {
-        if (!armed) return;
-        if (e.relatedTarget) return; // moving within page
-        if (e.clientY > 10) return;  // only top-edge exit
-        if (!shouldShow()) return;
-        open();
-      });
-      // Fallback: also show after 25s of dwell on desktop
-      setTimeout(() => { if (shouldShow()) open(); }, 25000);
+
+    let fired = false;
+    function fire() {
+      if (fired) return;
+      if (!shouldShow()) return; // re-check at fire time: checkout may be open, code issued, etc.
+      fired = true;
+      teardown();
+      open();
     }
+    function teardown() {
+      window.removeEventListener("scroll", onScroll);
+      document.removeEventListener("mouseout", onMouseOut);
+      clearTimeout(armTimer);
+    }
+
+    function onScroll() {
+      const doc = document.documentElement;
+      const scrolled = window.scrollY || doc.scrollTop || 0;
+      const max = (doc.scrollHeight - window.innerHeight) || 1;
+      if (scrolled / max >= 0.5) fire();
+    }
+
+    const isTouch = window.matchMedia("(hover: none)").matches || window.innerWidth < 768;
+    let armed = false;
+    const armTimer = setTimeout(() => { armed = true; }, 2000); // ignore accidental early exits
+    function onMouseOut(e) {
+      if (!armed || isTouch) return;
+      if (e.relatedTarget || e.toElement) return; // still moving within the page
+      if (e.clientY > 0) return;                   // only a genuine top-edge exit
+      fire();
+    }
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    if (!isTouch) document.addEventListener("mouseout", onMouseOut);
+    onScroll(); // handle a page that loads already scrolled past 50% (anchor / restored position)
   })();
 </script>
 
