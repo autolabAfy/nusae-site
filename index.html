@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=14" />
+<link rel="stylesheet" href="styles.css?v=15" />
 <script>
   // -------- ONE-LINE CONFIG --------
   // Replace WA_NUMBER with your WhatsApp number in international format (no +, no spaces).
@@ -168,8 +168,16 @@ I'd like to order Ophelia.
       </label>
 
       <label class="field">
+        <span>Country / region</span>
+        <select name="country" id="countrySelect" required>
+          <option value="SG" selected>Singapore</option>
+          <option value="MY">Malaysia</option>
+        </select>
+      </label>
+
+      <label class="field">
         <span>Shipping address</span>
-        <textarea name="address" autocomplete="street-address" required rows="3" maxlength="500" placeholder="Full address including unit, postal code, country"></textarea>
+        <textarea name="address" autocomplete="street-address" required rows="3" maxlength="500" placeholder="Full address including unit, postal code, city / state"></textarea>
       </label>
 
       <fieldset class="items-block">
@@ -178,9 +186,25 @@ I'd like to order Ophelia.
         <button type="button" class="btn-link" id="addItemBtn">+ Add another colour</button>
       </fieldset>
 
+      <div class="discount-row" id="discountRow" hidden>
+        <span class="discount-label">Discount code</span>
+        <span class="discount-code" id="discountCodeChip">—</span>
+        <button type="button" class="discount-remove" id="discountRemove" aria-label="Remove discount">×</button>
+      </div>
+
+      <div class="totals-summary" id="totalsSummary" hidden>
+        <div class="summary-line">
+          <span class="summary-label">Shipping</span>
+          <span class="summary-value" id="shipAmount"></span>
+        </div>
+      </div>
+
       <div class="totals">
         <span class="totals-label">Total</span>
-        <span class="totals-amount" id="totalAmount">SGD $47</span>
+        <span class="totals-grand">
+          <span class="totals-amount" id="totalAmount">SGD $47</span>
+          <span class="totals-rm" id="totalRm" hidden></span>
+        </span>
       </div>
 
       <p class="checkout-note">After clicking continue you'll be redirected to HitPay to pay via PayNow or Card.</p>
@@ -191,6 +215,42 @@ I'd like to order Ophelia.
       </button>
       <p class="checkout-error" id="checkoutError" hidden></p>
     </form>
+  </div>
+</div>
+
+<!-- WELCOME POPUP -->
+<div class="popup-overlay" id="popupOverlay" role="dialog" aria-modal="true" aria-labelledby="popupTitle" hidden>
+  <div class="popup-card">
+    <button type="button" class="popup-close" id="popupClose" aria-label="Close">×</button>
+
+    <div class="popup-state" data-state="form">
+      <div class="popup-art" aria-hidden="true">✿</div>
+      <p class="eyebrow">— A small welcome —</p>
+      <h3 id="popupTitle">15% off your first Ophelia</h3>
+      <p class="popup-sub">Drop your email and we'll send you a one-time code for 15% off — yours to use whenever you're ready.</p>
+      <form class="popup-form" id="popupForm" novalidate>
+        <label class="field">
+          <span class="visually-hidden">Email</span>
+          <input type="email" name="email" autocomplete="email" required maxlength="120" placeholder="you@email.com" />
+        </label>
+        <button type="submit" class="btn btn-primary btn-lg popup-submit" id="popupSubmit">
+          <span class="popup-submit-label">Send my 15% code</span>
+          <span class="popup-submit-loading" hidden>Sending…</span>
+        </button>
+        <p class="popup-error" id="popupError" hidden></p>
+        <button type="button" class="popup-decline" id="popupDecline">No thanks, I'll pay full price</button>
+      </form>
+    </div>
+
+    <div class="popup-state" data-state="success" hidden>
+      <div class="popup-art" aria-hidden="true">✿</div>
+      <p class="eyebrow">— You're in —</p>
+      <h3>Here's your 15% code</h3>
+      <p class="popup-sub">We've also sent it to your inbox. It'll auto-apply at checkout.</p>
+      <div class="popup-code" id="popupCodeDisplay">—</div>
+      <button type="button" class="btn btn-primary btn-lg popup-copy" id="popupCopy">Copy code</button>
+      <button type="button" class="popup-decline" id="popupShopNow">Shop Ophelia →</button>
+    </div>
   </div>
 </div>
 
@@ -384,12 +444,19 @@ I'd like to order Ophelia.
   (function() {
     const PRICE = 47;
     const COLOURS = ["white", "beige", "grey", "black"];
+    // Keep in sync with functions/api/checkout.js. Shipping is free to SG + MY;
+    // MYR_PER_SGD is only used for the RM price estimate shown to Malaysian buyers.
+    const MYR_PER_SGD = 3.30;          // approximate FX for the RM estimate
     const overlay = document.getElementById("checkoutOverlay");
     const closeBtn = document.getElementById("checkoutClose");
     const form = document.getElementById("checkoutForm");
     const itemsList = document.getElementById("itemsList");
     const addItemBtn = document.getElementById("addItemBtn");
     const totalEl = document.getElementById("totalAmount");
+    const countrySelect = document.getElementById("countrySelect");
+    const totalsSummary = document.getElementById("totalsSummary");
+    const shipAmountEl = document.getElementById("shipAmount");
+    const totalRmEl = document.getElementById("totalRm");
     const submitBtn = document.getElementById("checkoutSubmit");
     const errorEl = document.getElementById("checkoutError");
     if (!overlay || !form) return;
@@ -433,13 +500,58 @@ I'd like to order Ophelia.
       });
     }
 
+    const discountRow = document.getElementById("discountRow");
+    const discountChip = document.getElementById("discountCodeChip");
+    const discountRemove = document.getElementById("discountRemove");
+    const DISCOUNT_PCT = 15;
+
+    function getSavedCode() {
+      try { return localStorage.getItem("nusae_welcome_code") || ""; } catch (_) { return ""; }
+    }
+    function clearSavedCode() {
+      try { localStorage.removeItem("nusae_welcome_code"); } catch (_) {}
+    }
+    function syncDiscountRow() {
+      const code = getSavedCode();
+      if (code) {
+        discountChip.textContent = code;
+        discountRow.hidden = false;
+      } else {
+        discountRow.hidden = true;
+      }
+    }
+    discountRemove?.addEventListener("click", () => {
+      clearSavedCode();
+      syncDiscountRow();
+      updateTotals();
+    });
+
     function updateTotals() {
       let qty = 0;
       itemsList.querySelectorAll(".item-row").forEach(r => {
         qty += parseInt(r.querySelector(".item-qty").value, 10) || 0;
       });
-      const total = qty * PRICE;
-      totalEl.textContent = `SGD $${total}`;
+      const subtotal = qty * PRICE;
+      const code = getSavedCode();
+      const grandTotal = code ? +(subtotal * (1 - DISCOUNT_PCT / 100)).toFixed(2) : subtotal;
+
+      const country = countrySelect ? countrySelect.value : "SG";
+
+      // Free shipping to both SG and MY (with strike-through original if a discount applies)
+      totalEl.innerHTML = code
+        ? `<span class="totals-strike">SGD $${subtotal}</span> SGD $${grandTotal.toFixed(2)}`
+        : `SGD $${grandTotal % 1 === 0 ? grandTotal : grandTotal.toFixed(2)}`;
+
+      if (country === "MY") {
+        // Reassure with free shipping + an RM price estimate
+        totalsSummary.hidden = false;
+        shipAmountEl.textContent = "Free";
+        totalRmEl.textContent = `≈ RM ${Math.round(grandTotal * MYR_PER_SGD)}`;
+        totalRmEl.hidden = false;
+      } else {
+        totalsSummary.hidden = true;
+        totalRmEl.hidden = true;
+      }
     }
 
     function readItems() {
@@ -451,6 +563,8 @@ I'd like to order Ophelia.
 
     function open() {
       if (!itemsList.children.length) makeRow();
+      syncDiscountRow();
+      updateTotals();
       overlay.hidden = false;
       document.body.style.overflow = "hidden";
       setTimeout(() => form.querySelector("input,select,textarea")?.focus(), 50);
@@ -470,6 +584,7 @@ I'd like to order Ophelia.
     overlay.addEventListener("click", e => { if (e.target === overlay) close(); });
     document.addEventListener("keydown", e => { if (e.key === "Escape" && !overlay.hidden) close(); });
     addItemBtn.addEventListener("click", () => makeRow());
+    countrySelect?.addEventListener("change", updateTotals);
 
     // Open if URL has #order
     if (window.location.hash === "#order") open();
@@ -487,8 +602,10 @@ I'd like to order Ophelia.
         lastName: (fd.get("lastName") || "").trim(),
         email: (fd.get("email") || "").trim(),
         contact: (fd.get("contact") || "").trim(),
+        country: (fd.get("country") || "SG").trim(),
         address: (fd.get("address") || "").trim(),
-        items: readItems()
+        items: readItems(),
+        discountCode: getSavedCode() || undefined
       };
 
       try {
@@ -510,6 +627,128 @@ I'd like to order Ophelia.
         submitBtn.querySelector(".checkout-submit-loading").hidden = true;
       }
     });
+  })();
+
+  // Welcome popup — 15% off in exchange for email
+  (function() {
+    const overlay = document.getElementById("popupOverlay");
+    if (!overlay) return;
+    const closeBtn = document.getElementById("popupClose");
+    const declineBtn = document.getElementById("popupDecline");
+    const form = document.getElementById("popupForm");
+    const submitBtn = document.getElementById("popupSubmit");
+    const errorEl = document.getElementById("popupError");
+    const stateForm = overlay.querySelector('[data-state="form"]');
+    const stateSuccess = overlay.querySelector('[data-state="success"]');
+    const codeDisplay = document.getElementById("popupCodeDisplay");
+    const copyBtn = document.getElementById("popupCopy");
+    const shopBtn = document.getElementById("popupShopNow");
+
+    const DISMISS_KEY = "nusae_popup_dismissed_at";
+    const CODE_KEY = "nusae_welcome_code";
+    const SUPPRESS_DAYS = 30;
+    const MS_PER_DAY = 86400000;
+
+    function shouldShow() {
+      try {
+        if (localStorage.getItem(CODE_KEY)) return false;
+        const last = parseInt(localStorage.getItem(DISMISS_KEY) || "0", 10);
+        if (last && (Date.now() - last) < SUPPRESS_DAYS * MS_PER_DAY) return false;
+      } catch (_) {}
+      return true;
+    }
+    function markDismissed() {
+      try { localStorage.setItem(DISMISS_KEY, String(Date.now())); } catch (_) {}
+    }
+    function saveCode(code) {
+      try { localStorage.setItem(CODE_KEY, code); } catch (_) {}
+    }
+
+    function open() {
+      overlay.hidden = false;
+      document.body.style.overflow = "hidden";
+      setTimeout(() => form.querySelector("input")?.focus(), 80);
+    }
+    function close() {
+      overlay.hidden = true;
+      document.body.style.overflow = "";
+      markDismissed();
+    }
+
+    function showSuccess(code) {
+      stateForm.hidden = true;
+      stateSuccess.hidden = false;
+      codeDisplay.textContent = code;
+      saveCode(code);
+      // Refresh totals in checkout (if it's been opened before)
+      const total = document.getElementById("totalAmount");
+      if (total && !document.getElementById("checkoutOverlay").hidden) {
+        document.querySelector(".item-qty")?.dispatchEvent(new Event("input"));
+      }
+    }
+
+    closeBtn.addEventListener("click", close);
+    declineBtn.addEventListener("click", close);
+    overlay.addEventListener("click", e => { if (e.target === overlay) close(); });
+    document.addEventListener("keydown", e => { if (e.key === "Escape" && !overlay.hidden) close(); });
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      errorEl.hidden = true;
+      submitBtn.disabled = true;
+      submitBtn.querySelector(".popup-submit-label").hidden = true;
+      submitBtn.querySelector(".popup-submit-loading").hidden = false;
+
+      const email = (new FormData(form).get("email") || "").toString().trim();
+      try {
+        const res = await fetch("/api/popup-signup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email })
+        });
+        const data = await res.json();
+        if (!res.ok || !data.code) throw new Error(data.error || "Couldn't generate your code. Please try again.");
+        showSuccess(data.code);
+      } catch (err) {
+        errorEl.textContent = err.message || "Something went wrong. Please try again.";
+        errorEl.hidden = false;
+        submitBtn.disabled = false;
+        submitBtn.querySelector(".popup-submit-label").hidden = false;
+        submitBtn.querySelector(".popup-submit-loading").hidden = true;
+      }
+    });
+
+    copyBtn.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(codeDisplay.textContent || "");
+        copyBtn.textContent = "Copied ✓";
+        setTimeout(() => { copyBtn.textContent = "Copy code"; }, 1500);
+      } catch (_) {}
+    });
+    shopBtn.addEventListener("click", () => {
+      overlay.hidden = true;
+      document.body.style.overflow = "";
+      document.querySelector("[data-open-checkout]")?.click();
+    });
+
+    // Trigger logic: 8s delay on touch/small screens, exit-intent on desktop.
+    if (!shouldShow()) return;
+    const isTouch = window.matchMedia("(hover: none)").matches || window.innerWidth < 768;
+    if (isTouch) {
+      setTimeout(() => { if (shouldShow()) open(); }, 8000);
+    } else {
+      let armed = false;
+      setTimeout(() => { armed = true; }, 3000);
+      document.addEventListener("mouseout", (e) => {
+        if (!armed) return;
+        if (e.relatedTarget) return; // moving within page
+        if (e.clientY > 10) return;  // only top-edge exit
+        if (!shouldShow()) return;
+        open();
+      });
+      // Fallback: also show after 25s of dwell on desktop
+      setTimeout(() => { if (shouldShow()) open(); }, 25000);
+    }
   })();
 </script>
 
