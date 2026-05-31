@@ -62,6 +62,49 @@ h5 { font-family: var(--sans); font-size: 12px; letter-spacing: 2px; text-transf
   padding: 10px 16px;
 }
 
+/* ============ Hero trust row + made-to-order (CRO) ============ */
+.hero-trust {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 22px;
+  margin-top: 26px;
+  padding: 0;
+}
+.hero-trust li {
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--ink-soft);
+  letter-spacing: 0.2px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+.hero-trust li span { font-size: 14px; line-height: 1; }
+.hero-madeorder {
+  margin-top: 14px;
+  font-family: var(--sans);
+  font-size: 12.5px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--accent-deep);
+}
+
+/* Pre-order reassurance under the product CTA */
+.preorder-note {
+  margin-top: 16px;
+  max-width: 46ch;
+  font-family: var(--sans);
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+}
+.preorder-note strong { color: var(--ink); font-weight: 600; }
+
 /* ============ Nav ============ */
 .nav {
   display: flex;
@@ -129,7 +172,23 @@ h5 { font-family: var(--sans); font-size: 12px; letter-spacing: 2px; text-transf
   border-top: 1px solid var(--line);
   box-shadow: 0 -6px 18px rgba(31, 26, 20, 0.08);
 }
-.mobile-order-bar .btn { width: 100%; max-width: 520px; margin: 0 auto; text-align: center; }
+/* Desktop: constrained row — product label left, CTA right (proper purchase bar) */
+.order-bar-inner {
+  max-width: var(--max);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+.order-bar-label {
+  font-family: var(--serif);
+  font-size: 18px;
+  color: var(--ink-soft);
+  letter-spacing: 0.3px;
+}
+.order-bar-label em { font-style: italic; color: var(--accent-deep); }
+.mobile-order-bar .btn { white-space: nowrap; }
 /* Reserve space so the fixed bar never sits over the footer (all sizes) */
 body { padding-bottom: 84px; }
 
@@ -637,6 +696,11 @@ footer { padding: clamp(50px, 6vw, 90px) var(--pad) 28px; }
   .nav nav a:last-child { border-bottom: 0; }
   .nav-toggle { display: flex; }
   .nav-order { display: none; }          /* header CTA hidden on mobile; sticky bottom bar covers it */
+
+  /* Sticky bar collapses to a single full-width button on mobile */
+  .order-bar-label { display: none; }
+  .order-bar-inner { justify-content: center; }
+  .mobile-order-bar .btn { width: 100%; }
 
   .hero, .product, .founder-inner { grid-template-columns: 1fr; }
   .hero-art:after { display: none; }

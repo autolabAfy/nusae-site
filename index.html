@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=17" />
+<link rel="stylesheet" href="styles.css?v=18" />
 <script>
   // -------- ONE-LINE CONFIG --------
   // Replace WA_NUMBER with your WhatsApp number in international format (no +, no spaces).
@@ -34,7 +34,7 @@
 <body>
 
 <!-- ANNOUNCEMENT BAR -->
-<div class="announce">✿ Breathable, lightweight, effortless pieces · Free shipping across Singapore &amp; Malaysia</div>
+<div class="announce">✿ Pre-orders open · Made to order, ships in 5–10 days · Free shipping across Singapore &amp; Malaysia</div>
 
 <!-- NAV -->
 <header class="nav">
@@ -51,9 +51,12 @@
   </button>
 </header>
 
-<!-- MOBILE STICKY ORDER BAR -->
+<!-- STICKY ORDER BAR -->
 <div class="mobile-order-bar">
-  <a class="btn btn-primary" href="#order" data-open-checkout>Order &amp; Pay Now — SGD $47</a>
+  <div class="order-bar-inner">
+    <span class="order-bar-label"><em>Ophelia</em> Lace Outerwear · Free shipping SG &amp; MY</span>
+    <a class="btn btn-primary" href="#order" data-open-checkout>Order &amp; Pay Now — SGD $47</a>
+  </div>
 </div>
 
 <!-- HERO -->
@@ -61,10 +64,17 @@
   <div class="hero-text">
     <p class="eyebrow">— A space for everyday modest wear —</p>
     <h1>Effortless pieces.<br />Made simple.</h1>
-    <p class="lede">Comfortable, modest, and timeless. Handpicked styles in breathable fabrics — so getting dressed feels easy, never heavy.</p>
+    <p class="lede">Meet <em>Ophelia</em> — a delicate lace layering piece in soft, breathable fabric. Made to order, just for you.</p>
     <div class="cta-row">
-      <a class="btn btn-primary" href="#shop">View Ophelia</a>
+      <a class="btn btn-primary" href="#order" data-open-checkout>Order &amp; Pay Now — SGD $47</a>
+      <a class="btn btn-ghost" href="#shop">See the details</a>
     </div>
+    <ul class="hero-trust">
+      <li><span aria-hidden="true">🇸🇬🇲🇾</span> Free shipping SG &amp; MY</li>
+      <li><span aria-hidden="true">🔒</span> Secure PayNow &amp; Card</li>
+      <li><span aria-hidden="true">↩︎</span> Money-back guarantee</li>
+    </ul>
+    <p class="hero-madeorder">✿ Made to order · ships in 5–10 days</p>
   </div>
   <div class="hero-art">
     <div class="hero-slides">
@@ -88,15 +98,15 @@
   <div class="product">
     <div class="gallery">
       <div class="gallery-main">
-        <img src="assets/ophelia-shades.jpg" alt="Ophelia in white, black and grey" id="mainImage" />
+        <img src="assets/ophelia-shades.jpg" alt="Ophelia in white, black and grey" id="mainImage" loading="lazy" decoding="async" width="900" height="990" />
       </div>
       <div class="thumbs">
-        <button onclick="document.getElementById('mainImage').src='assets/ophelia-shades.jpg'"><img src="assets/ophelia-shades.jpg" alt="Three colours" /></button>
-        <button onclick="document.getElementById('mainImage').src='assets/ophelia-meet.jpg'"><img src="assets/ophelia-meet.jpg" alt="White" /></button>
-        <button onclick="document.getElementById('mainImage').src='assets/ophelia-product-beige.jpg'"><img src="assets/ophelia-product-beige.jpg" alt="Beige" /></button>
-        <button onclick="document.getElementById('mainImage').src='assets/ophelia-product-grey.jpg'"><img src="assets/ophelia-product-grey.jpg" alt="Grey" /></button>
-        <button onclick="document.getElementById('mainImage').src='assets/ophelia-product-black.jpg'"><img src="assets/ophelia-product-black.jpg" alt="Black" /></button>
-        <button onclick="document.getElementById('mainImage').src='assets/ophelia-black-closeup.jpg'"><img src="assets/ophelia-black-closeup.jpg" alt="Black close-up" /></button>
+        <button onclick="document.getElementById('mainImage').src='assets/ophelia-shades.jpg'"><img src="assets/ophelia-shades.jpg" alt="Three colours" loading="lazy" decoding="async" /></button>
+        <button onclick="document.getElementById('mainImage').src='assets/ophelia-meet.jpg'"><img src="assets/ophelia-meet.jpg" alt="White" loading="lazy" decoding="async" /></button>
+        <button onclick="document.getElementById('mainImage').src='assets/ophelia-product-beige.jpg'"><img src="assets/ophelia-product-beige.jpg" alt="Beige" loading="lazy" decoding="async" /></button>
+        <button onclick="document.getElementById('mainImage').src='assets/ophelia-product-grey.jpg'"><img src="assets/ophelia-product-grey.jpg" alt="Grey" loading="lazy" decoding="async" /></button>
+        <button onclick="document.getElementById('mainImage').src='assets/ophelia-product-black.jpg'"><img src="assets/ophelia-product-black.jpg" alt="Black" loading="lazy" decoding="async" /></button>
+        <button onclick="document.getElementById('mainImage').src='assets/ophelia-black-closeup.jpg'"><img src="assets/ophelia-black-closeup.jpg" alt="Black close-up" loading="lazy" decoding="async" /></button>
       </div>
     </div>
 
@@ -130,6 +140,7 @@
         <a class="btn btn-primary" href="#order" data-open-checkout>Order &amp; Pay Now</a>
       </div>
       <p class="pay-methods">Pay with PayNow &amp; Card · Secure checkout by HitPay</p>
+      <p class="preorder-note">✿ <strong>Made to order.</strong> Your Ophelia is hand-finished after you order — never mass-produced, never sitting in a warehouse. Shipped within 5–10 days, with a money-back guarantee if it doesn't sit right.</p>
     </div>
   </div>
 </section>
@@ -366,7 +377,7 @@
 <section class="founder" id="founder">
   <div class="founder-inner">
     <div class="founder-photo">
-      <img src="assets/founder.jpg?v=2" alt="Natalia, founder of NUSAÉ" />
+      <img src="assets/founder.jpg?v=2" alt="Natalia, founder of NUSAÉ" loading="lazy" decoding="async" />
     </div>
     <div class="founder-text">
       <p class="eyebrow">— The hands behind NUSAÉ —</p>
