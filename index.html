@@ -620,6 +620,7 @@ I'd like to order Ophelia.
       if (!itemsList.children.length) makeRow();
       syncDiscountRow();
       updateTotals();
+      setDialPrefix();
       overlay.hidden = false;
       document.body.style.overflow = "hidden";
       setTimeout(() => form.querySelector("input,select,textarea")?.focus(), 50);
@@ -639,7 +640,21 @@ I'd like to order Ophelia.
     overlay.addEventListener("click", e => { if (e.target === overlay) close(); });
     document.addEventListener("keydown", e => { if (e.key === "Escape" && !overlay.hidden) close(); });
     addItemBtn.addEventListener("click", () => makeRow());
-    countrySelect?.addEventListener("change", updateTotals);
+
+    // Auto-fill the dialing code from the selected country: SG → +65, MY → +60.
+    const contactInput = form.querySelector('[name="contact"]');
+    const DIAL = { SG: "+65 ", MY: "+60 " };
+    const DIAL_PLACEHOLDER = { SG: "+65 9123 4567", MY: "+60 12 345 6789" };
+    function setDialPrefix() {
+      if (!contactInput) return;
+      const c = countrySelect ? countrySelect.value : "SG";
+      const dial = DIAL[c] || "";
+      // Strip any existing "+NN " prefix and keep whatever number was typed.
+      const rest = (contactInput.value || "").replace(/^\s*\+\d{1,3}\s*/, "").trimStart();
+      contactInput.value = rest ? `${dial}${rest}` : dial;
+      if (DIAL_PLACEHOLDER[c]) contactInput.placeholder = DIAL_PLACEHOLDER[c];
+    }
+    countrySelect?.addEventListener("change", () => { setDialPrefix(); updateTotals(); });
 
     // Open if URL has #order
     if (window.location.hash === "#order") open();
