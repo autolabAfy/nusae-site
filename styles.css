@@ -188,7 +188,7 @@ h5 { font-family: var(--sans); font-size: 12px; letter-spacing: 2px; text-transf
   letter-spacing: 0.3px;
 }
 .order-bar-label em { font-style: italic; color: var(--accent-deep); }
-.mobile-order-bar .btn { white-space: nowrap; }
+.mobile-order-bar .btn { white-space: nowrap; text-align: center; }
 /* Reserve space so the fixed bar never sits over the footer (all sizes) */
 body { padding-bottom: 84px; }
 
